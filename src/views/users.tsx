@@ -1,14 +1,24 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
+import type { AppDispatch } from "@/app/store";
+import DeleteUserAction from "@/components/deleteUserAction";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
-import type { UserModel } from "@/models/user.model";
-
-const users: UserModel[] = [];
+import UpdateUserAction from "@/components/updateUserAction";
 
 export default function UsersPage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const users = useSelector(selectUsers);
+
+  useEffect(() => {
+     dispatch(fetchUsers());
+  }, [dispatch]);
+
   return (
     <section className="space-y-6">
       <div className="flex justify-end">
@@ -25,13 +35,12 @@ export default function UsersPage() {
       <DataTable
         columns={[
           {
+            header: "Index",
+            render: (_, rowIndex) => rowIndex + 1,
+          },
+          {
             header: "User",
-            render: (user) => (
-              <div>
-                <p className="font-medium text-zinc-950">{user.name}</p>
-                <p className="mt-1 text-xs text-zinc-500">{user.id}</p>
-              </div>
-            ),
+            render: (user) => user.name,
           },
           {
             header: "Email",
@@ -44,16 +53,13 @@ export default function UsersPage() {
             ),
           },
           {
-            header: "Status",
+            header: "Actions",
             render: (user) => (
-              <span className="inline-flex rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
-                {user.status}
-              </span>
+              <div className="flex items-center gap-2">
+                <UpdateUserAction user={user} />
+                <DeleteUserAction user={user} />
+              </div>
             ),
-          },
-          {
-            header: "Last Login",
-            render: (user) => user.lastLogin,
           },
         ]}
         description="Manage users from the current protected page."

@@ -3,6 +3,7 @@ import { endpoints } from "@/constants/endpoints"
 import { baseQuery } from '@/utility/baseQuery';
 
 const authApi = createApi({
+  reducerPath: 'authApi',
   baseQuery,
   endpoints: (builder) => ({
     Login: builder.mutation({

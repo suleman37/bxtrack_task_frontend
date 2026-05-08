@@ -4,9 +4,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UserForm from "@/components/userForm/form";
 import { R } from "@/constants/R";
+import type { UserFormType } from "@/schemas/user.dto";
+import { useCreateUserMutation } from "@/services/user.service";
 
 export default function AddUserPage() {
   const router = useRouter();
+  const [createUser, { isLoading }] = useCreateUserMutation();
+
+  async function handleSubmit(values: UserFormType) {
+    await createUser(values).unwrap();
+    router.push(R.protected.user);
+  }
 
   return (
     <section className="space-y-6">
@@ -16,7 +24,7 @@ export default function AddUserPage() {
             Add User
           </h3>
           <p className="mt-1 text-sm text-zinc-600">
-            Create a user with name, email, and role.
+            Create a user with name, email, password, and role.
           </p>
         </div>
 
@@ -30,9 +38,8 @@ export default function AddUserPage() {
 
       <UserForm
         cancelHref={R.protected.user}
-        onSubmit={async () => {
-          router.push(R.protected.user);
-        }}
+        isSubmitting={isLoading}
+        onSubmit={handleSubmit}
       />
     </section>
   );

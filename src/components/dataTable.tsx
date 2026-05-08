@@ -10,7 +10,7 @@ import { cn } from "@/lib/cn";
 type DataTableColumn<T> = {
   header: string;
   className?: string;
-  render: (row: T) => ReactNode;
+  render: (row: T, rowIndex: number) => ReactNode;
 };
 
 type DataTableProps<T extends { id: string | number }> = {
@@ -70,12 +70,12 @@ export default function DataTable<T extends { id: string | number }>({
                     {columns.map((column) => (
                       <td
                         key={`${row.id}-${column.header}`}
-                        className={cn(
+                    className={cn(
                           "px-6 py-4 text-sm text-zinc-700",
                           column.className
                         )}
                       >
-                        {column.render(row)}
+                        {column.render(row, rowIndex)}
                       </td>
                     ))}
                   </tr>

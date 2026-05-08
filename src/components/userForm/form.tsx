@@ -1,7 +1,9 @@
 "use client";
 
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@/components/button";
 import Card, { CardContent } from "@/components/card";
@@ -35,6 +37,7 @@ export default function UserForm({
   const form = useForm<UserFormType>({
     resolver: yupResolver(userSchema),
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Card>
@@ -106,6 +109,42 @@ export default function UserForm({
                           </option>
                         ))}
                       </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter user password"
+                          className="pr-11"
+                          {...field}
+                          value={field.value}
+                        />
+                        <button
+                          type="button"
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
+                          onClick={() => setShowPassword((value) => !value)}
+                          className="absolute inset-y-0 right-0 inline-flex w-11 items-center justify-center text-zinc-500 transition-colors hover:text-zinc-950"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

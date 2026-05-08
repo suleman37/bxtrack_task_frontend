@@ -1,9 +1,3 @@
-import Card, {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/card";
 import DataTable from "@/components/data-table";
 
 const customers = [

@@ -1,9 +1,4 @@
-import Card, {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/card";
+
 
 export default function DashboardPage() {
   return (

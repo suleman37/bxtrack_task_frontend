@@ -155,7 +155,7 @@ export default function UserForm({
             <FormActions className="gap-3">
               <Link
                 href={cancelHref}
-                className="inline-flex h-11 items-center justify-center rounded-xl border border-zinc-200 px-5 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:bg-zinc-50"
+                className="inline-flex h-11 items-center justify-center rounded-[8px] border border-zinc-200 px-5 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:bg-zinc-50"
               >
                 Cancel
               </Link>

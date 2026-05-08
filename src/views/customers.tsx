@@ -1,77 +1,53 @@
-import DataTable from "@/components/data-table";
+"use client";
 
-const customers = [
-  {
-    id: "CST-2401",
-    name: "Northwind Logistics",
-    contact: "Harper Cole",
-    tier: "Enterprise",
-    status: "Active",
-    region: "United States",
-  },
-  {
-    id: "CST-2402",
-    name: "Atlas Retail Group",
-    contact: "Mason Lee",
-    tier: "Growth",
-    status: "Onboarding",
-    region: "Canada",
-  },
-  {
-    id: "CST-2403",
-    name: "Summit Health Co.",
-    contact: "Sophia Turner",
-    tier: "Enterprise",
-    status: "Active",
-    region: "United Kingdom",
-  },
-  {
-    id: "CST-2404",
-    name: "Brightline Foods",
-    contact: "Lucas Bennett",
-    tier: "Starter",
-    status: "At Risk",
-    region: "Australia",
-  },
-];
+import Link from "next/link";
+import DataTable from "@/components/data-table";
+import { R } from "@/constants/R";
+import { cn } from "@/lib/cn";
+import type { CustomerModel } from "@/models/customer.model";
+
+const customers: CustomerModel[] = [];
 
 export default function CustomersPage() {
   return (
     <section className="space-y-6">
+      <div className="flex justify-end">
+        <Link
+          href={R.protected.customersAdd}
+          className={cn(
+            "inline-flex h-11 items-center justify-center rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-950"
+          )}
+        >
+          Add Customer
+        </Link>
+      </div>
+
       <DataTable
         columns={[
           {
-            header: "Customer",
-            render: (customer) => (
-              <div>
-                <p className="font-medium text-zinc-950">{customer.name}</p>
-                <p className="mt-1 text-xs text-zinc-500">{customer.id}</p>
-              </div>
-            ),
+            header: "Name",
+            render: (customer) => customer.name,
           },
           {
-            header: "Primary Contact",
-            render: (customer) => customer.contact,
+            header: "Email",
+            render: (customer) => customer.email,
           },
           {
-            header: "Tier",
-            render: (customer) => customer.tier,
+            header: "Phone",
+            render: (customer) => customer.phone,
           },
           {
-            header: "Region",
-            render: (customer) => customer.region,
+            header: "Organization ID",
+            render: (customer) => customer.organizationId,
           },
           {
-            header: "Status",
-            render: (customer) => (
-              <span className="inline-flex rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
-                {customer.status}
-              </span>
-            ),
+            header: "Assigned To",
+            render: (customer) => customer.assignedTo,
           },
         ]}
-        description="Demo customer records rendered in a reusable table card."
+        description="Manage customers from the current protected page."
         rows={customers}
+        emptyMessage="No customers available."
         title="Customer Accounts"
       />
     </section>

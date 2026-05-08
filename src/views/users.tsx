@@ -1,43 +1,27 @@
-import DataTable from "@/components/data-table";
+"use client";
 
-const users = [
-  {
-    id: "USR-1001",
-    name: "Ava Martinez",
-    email: "ava.martinez@bxtrack.dev",
-    role: "Admin",
-    status: "Active",
-    lastLogin: "07 May 2026",
-  },
-  {
-    id: "USR-1002",
-    name: "Liam Carter",
-    email: "liam.carter@bxtrack.dev",
-    role: "Manager",
-    status: "Active",
-    lastLogin: "06 May 2026",
-  },
-  {
-    id: "USR-1003",
-    name: "Noah Brooks",
-    email: "noah.brooks@bxtrack.dev",
-    role: "Support",
-    status: "Pending",
-    lastLogin: "04 May 2026",
-  },
-  {
-    id: "USR-1004",
-    name: "Emma Reed",
-    email: "emma.reed@bxtrack.dev",
-    role: "Analyst",
-    status: "Inactive",
-    lastLogin: "29 Apr 2026",
-  },
-];
+import Link from "next/link";
+import DataTable from "@/components/data-table";
+import { R } from "@/constants/R";
+import { cn } from "@/lib/cn";
+import type { UserModel } from "@/models/user.model";
+
+const users: UserModel[] = [];
 
 export default function UsersPage() {
   return (
     <section className="space-y-6">
+      <div className="flex justify-end">
+        <Link
+          href={R.protected.userAdd}
+          className={cn(
+            "inline-flex h-11 items-center justify-center rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-950"
+          )}
+        >
+          Add User
+        </Link>
+      </div>
+
       <DataTable
         columns={[
           {
@@ -55,7 +39,9 @@ export default function UsersPage() {
           },
           {
             header: "Role",
-            render: (user) => user.role,
+            render: (user) => (
+              <span className="capitalize">{user.role}</span>
+            ),
           },
           {
             header: "Status",
@@ -70,8 +56,9 @@ export default function UsersPage() {
             render: (user) => user.lastLogin,
           },
         ]}
-        description="Demo data rendered with the current protected page structure."
+        description="Manage users from the current protected page."
         rows={users}
+        emptyMessage="No users available."
         title="User Directory"
       />
     </section>

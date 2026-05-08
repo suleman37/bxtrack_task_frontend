@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import DataTable from "@/components/data-table";
+import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
 import type { CustomerModel } from "@/models/customer.model";

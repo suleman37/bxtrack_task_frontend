@@ -83,7 +83,7 @@ export default function DataTable<T extends { id: string | number }>({
               ) : (
                 <tr>
                   <td
-                    className="px-6 py-8 text-sm text-zinc-500"
+                    className="px-6 py-8 text-center text-sm text-zinc-500"
                     colSpan={columns.length}
                   >
                     {emptyMessage}

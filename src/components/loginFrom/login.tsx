@@ -62,7 +62,7 @@ export default function LoginPage({ onSubmit, isSubmitting }: LoginFormProps) {
                         placeholder="Enter your email"
                         className="h-10 rounded-[5px] border-zinc-300 bg-white px-4 text-sm text-zinc-900 placeholder:text-zinc-400 placeholder:opacity-100 shadow-none focus:border-[#167d77] focus-visible:outline-[#167d77]"
                         {...field}
-                        value={field.value ?? ""}
+                        value={field.value}
                       />
                     </FormControl>
                     <FormMessage className="px-2 text-xs" />
@@ -82,7 +82,7 @@ export default function LoginPage({ onSubmit, isSubmitting }: LoginFormProps) {
                         placeholder="Enter your password"
                         className="h-10 rounded-[5px] border-zinc-300 bg-white px-4 text-sm text-zinc-900 placeholder:text-zinc-400 placeholder:opacity-100 shadow-none focus:border-[#167d77] focus-visible:outline-[#167d77]"
                         {...field}
-                        value={field.value ?? ""}
+                        value={field.value}
                       />
                     </FormControl>
                     <FormMessage className="px-2 text-xs" />

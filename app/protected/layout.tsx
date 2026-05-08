@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import ProtectedShell from "@/components/protected-shell";
+import ProtectedShell from "@/src/components/sideBar";
 
 type ProtectedLayoutProps = {
   children: ReactNode;

@@ -1,11 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
 import { useDispatch } from "react-redux";
 import { setToken } from "@/app/slices/auth.slice";
 import type { AppDispatch } from "@/app/store";
-import LoginForm from "@/components/login_from/login";
+import LoginForm from "@/src/components/loginFrom/login";
 import { R } from "@/constants/R";
 import type { LoginFormType } from "@/schemas/login.dto";
 import { useLoginMutation } from "@/services/auth.service";
@@ -13,7 +12,6 @@ import { useLoginMutation } from "@/services/auth.service";
 const LoginPage = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const [isPending, startTransition] = useTransition();
   const [login, { isLoading }] = useLoginMutation();
 
   async function handleSubmit(values: LoginFormType) {
@@ -23,12 +21,10 @@ const LoginPage = () => {
       dispatch(setToken(response.Token));
     }
 
-    startTransition(() => {
-      router.push(R.protected.prefix);
-    });
+    router.push(R.protected.prefix);
   }
 
-  return <LoginForm onSubmit={handleSubmit} isSubmitting={isPending || isLoading} />;
+  return <LoginForm onSubmit={handleSubmit} isSubmitting={isLoading} />;
 };
 
 export default LoginPage;

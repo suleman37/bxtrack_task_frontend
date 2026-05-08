@@ -5,4 +5,5 @@ export const loginSchema = yup.object().shape({
   password: yup.string().min(8).required(),
 });
 
-export type LoginFormType = yup.InferType<typeof loginSchema>;
+export type LoginDto = yup.InferType<typeof loginSchema>;
+export type LoginFormType = LoginDto;

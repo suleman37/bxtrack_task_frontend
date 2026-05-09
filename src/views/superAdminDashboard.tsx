@@ -16,13 +16,6 @@ const summaryCards = [
     cta: "Open organizations",
   },
   {
-    id: "customers",
-    label: "Customers",
-    description: "Review customer accounts across all organizations.",
-    href: R.protected.superAdmin.customers,
-    cta: "Open customers",
-  },
-  {
     id: "logs",
     label: "Audit Logs",
     description: "Inspect platform-wide audit activity and system events.",
@@ -34,7 +27,7 @@ const summaryCards = [
 export default function SuperAdminDashboardPage() {
   return (
     <section className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         {summaryCards.map((item) => (
           <Link key={item.id} href={item.href} className="group block">
             <Card className="h-full transition-transform transition-shadow group-hover:-translate-y-0.5 group-hover:shadow-md">

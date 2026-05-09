@@ -1,36 +1,59 @@
+"use client";
+
+import Link from "next/link";
+import OrganizationForwardAction from "@/components/organizationForwardAction";
 import DataTable from "@/src/components/dataTable";
-
-type SuperAdminOrganization = {
-  id: string;
-  name: string;
-  status: string;
-  users: number;
-  owner: string;
-};
-
-const organizations: SuperAdminOrganization[] = [
-];
+import { R } from "@/constants/R";
+import useOrganizations from "@/hooks/useOrganizations";
+import { cn } from "@/lib/cn";
 
 export default function SuperAdminOrganizationsPage() {
+  const { organizations } = useOrganizations();
+
   return (
     <section className="space-y-6">
+      <div className="flex justify-end">
+        <Link
+          href={R.protected.superAdmin.organizationsAdd}
+          className={cn(
+            "inline-flex h-11 items-center justify-center rounded-[8px] bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-950"
+          )}
+        >
+          Add Organization
+        </Link>
+      </div>
+
       <DataTable
         columns={[
           {
+            header: "Index",
+            render: (_, rowIndex) => rowIndex + 1,
+          },
+          {
             header: "Organization",
+            render: (organization) => organization.organizationName,
+          },
+          {
+            header: "Name",
             render: (organization) => organization.name,
           },
           {
-            header: "Owner",
-            render: (organization) => organization.owner,
+            header: "Email",
+            render: (organization) => organization.email,
           },
           {
-            header: "Users",
-            render: (organization) => organization.users,
+            header: "Role",
+            render: (organization) => (
+              <span className="capitalize">{organization.role}</span>
+            ),
           },
           {
-            header: "Status",
-            render: (organization) => organization.status,
+            header: "Actions",
+            render: (organization) => (
+              <OrganizationForwardAction
+                href={R.protected.admin.dashboardById(organization.id)}
+              />
+            ),
           },
         ]}
         description="Monitor organizations from the super admin workspace."

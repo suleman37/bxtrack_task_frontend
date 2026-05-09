@@ -45,11 +45,6 @@ export const superAdminSidebarNavItems: SidebarNavItem[] = [
     icon: Building2,
   },
   {
-    href: R.protected.superAdmin.customers,
-    label: "Customers",
-    icon: UsersRound,
-  },
-  {
     href: R.protected.superAdmin.logs,
     label: "Logs",
     icon: FileText,

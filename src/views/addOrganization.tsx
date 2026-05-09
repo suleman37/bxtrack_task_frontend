@@ -1,35 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import UserForm from "@/components/userForm/form";
+import OrganizationForm from "@/components/organizationForm/form";
 import { R } from "@/constants/R";
-import useAddUser from "@/hooks/useAddUser";
+import useAddOrganization from "@/hooks/useAddOrganization";
 
-export default function AddUserPage() {
-  const { handleSubmit, isSubmitting } = useAddUser();
+export default function AddOrganizationPage() {
+  const { handleSubmit, isSubmitting } = useAddOrganization();
 
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h3 className="text-xl font-semibold tracking-tight text-zinc-950">
-            Add User
+            Add Organization
           </h3>
           <p className="mt-1 text-sm text-zinc-600">
-            Create a user with name, email, password, and role.
+            Create an organization with organization name plus the same user-style inputs.
           </p>
         </div>
 
         <Link
-          href={R.protected.admin.user}
+          href={R.protected.superAdmin.organizations}
           className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-950"
         >
-          Back to users
+          Back to organizations
         </Link>
       </div>
 
-      <UserForm
-        cancelHref={R.protected.admin.user}
+      <OrganizationForm
+        cancelHref={R.protected.superAdmin.organizations}
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}
       />

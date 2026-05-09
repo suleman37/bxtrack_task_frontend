@@ -6,6 +6,7 @@ export const R = {
     prefix :"/protected",
     admin: {
       prefix: "/protected/dashboard",
+      dashboardById: (id: number) => `/protected/dashboard/${id}`,
       user: "/protected/user",
       userAdd: "/protected/user/add",
       customers: "/protected/customers",
@@ -14,6 +15,7 @@ export const R = {
     superAdmin: {
       prefix: "/protected/super_admin/dashboard",
       organizations: "/protected/super_admin/organizations",
+      organizationsAdd: "/protected/super_admin/organizations/add",
       customers: "/protected/super_admin/customers",
       logs: "/protected/super_admin/logs",
     },

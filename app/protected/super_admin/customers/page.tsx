@@ -1,5 +1,6 @@
-import SuperAdminCustomersPage from "@/views/superAdminCustomers";
+import { redirect } from "next/navigation";
+import { R } from "@/constants/R";
 
 export default function Page() {
-  return <SuperAdminCustomersPage />;
+  redirect(R.protected.superAdmin.organizations);
 }

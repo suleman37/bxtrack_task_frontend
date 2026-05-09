@@ -31,9 +31,6 @@ export function proxy(request: NextRequest) {
   if (pathname === R.protected.prefix) {
     return redirectTo(request, getDashboardRouteByRole(role));
   }
-  if (isSuperAdminRole(role) && isProtectedRoute && !isSuperAdminRoute) {
-    return redirectTo(request, R.protected.superAdmin.prefix);
-  }
   if (!isSuperAdminRole(role) && isSuperAdminRoute) {
     return redirectTo(request, R.protected.admin.prefix);
   }

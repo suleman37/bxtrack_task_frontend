@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { endpoints } from "@/constants/endpoints";
 import type { UserModel } from "@/models/user.model";
+import type { OrganizationFormType } from "@/schemas/organization.dto";
 import type { UserFormType } from "@/schemas/user.dto";
 import { baseQuery } from "@/utility/baseQuery";
 
@@ -12,7 +13,7 @@ const userApi = createApi({
       query: () => endpoints.users.getAll,
     }),
     createUser: builder.mutation({
-      query: (body: UserFormType) => ({
+      query: (body: UserFormType | OrganizationFormType) => ({
         url: endpoints.users.create,
         method: "POST",
         body,

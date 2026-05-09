@@ -1,40 +1,24 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { ArrowLeftCircle } from "lucide-react";
 import type { ReactNode } from "react";
-import { useTransition } from "react";
-import { useDispatch } from "react-redux";
-import { clearToken } from "@/app/slices/auth.slice";
-import type { AppDispatch } from "@/app/store";
-import { R } from "@/constants/R";
+import useProtectedShell from "@/hooks/useProtectedShell";
 import Sidebar from "@/src/components/sidebar/sidebar";
-import { getSidebarNavItems } from "@/src/components/sidebar/navItems";
 
 type ProtectedShellProps = {
   children: ReactNode;
 };
 
-function isActivePath(pathname: string, href: string) {
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
 export default function ProtectedShell({ children }: ProtectedShellProps) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
-  const [isPending, startTransition] = useTransition();
-  const sidebarNavItems = getSidebarNavItems(pathname);
-  const activeItem =
-    sidebarNavItems.find((item) => isActivePath(pathname, item.href)) ??
-    sidebarNavItems[0];
-
-  function handleLogout() {
-    dispatch(clearToken());
-
-    startTransition(() => {
-      router.replace(R.auth.prefix);
-    });
-  }
+  const {
+    activeLabel,
+    canReturnToSuperAdmin,
+    handleLogout,
+    handleReturnToSuperAdmin,
+    isPending,
+    pathname,
+    sidebarNavItems,
+  } = useProtectedShell();
 
   return (
     <div className="min-h-screen bg-zinc-100 text-zinc-900">
@@ -47,10 +31,20 @@ export default function ProtectedShell({ children }: ProtectedShellProps) {
         />
 
         <div className="flex min-h-screen flex-1 flex-col">
-          <header className="border-b border-zinc-200 bg-white/90 px-5 py-4 backdrop-blur md:px-8">
+          <header className="flex items-center justify-between gap-4 border-b border-zinc-200 bg-white/90 px-5 py-4 backdrop-blur md:px-8">
             <h2 className="text-2xl font-semibold tracking-tight text-zinc-950">
-              {activeItem.label}
+              {activeLabel}
             </h2>
+            {canReturnToSuperAdmin ? (
+              <button
+                type="button"
+                onClick={handleReturnToSuperAdmin}
+                className="inline-flex h-10 items-center gap-2 rounded-[8px] border border-zinc-200 px-4 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-950"
+              >
+                <ArrowLeftCircle className="h-5 w-5" />
+                <span>Back to Super Admin Panel</span>
+              </button>
+            ) : null}
           </header>
 
           <main className="flex-1 px-5 py-6 md:px-8 md:py-8">{children}</main>

@@ -13,7 +13,7 @@ export default function AddUserPage() {
 
   async function handleSubmit(values: UserFormType) {
     await createUser(values).unwrap();
-    router.push(R.protected.user);
+    router.push(R.protected.admin.user);
   }
 
   return (
@@ -29,7 +29,7 @@ export default function AddUserPage() {
         </div>
 
         <Link
-          href={R.protected.user}
+          href={R.protected.admin.user}
           className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-950"
         >
           Back to users
@@ -37,7 +37,7 @@ export default function AddUserPage() {
       </div>
 
       <UserForm
-        cancelHref={R.protected.user}
+        cancelHref={R.protected.admin.user}
         isSubmitting={isLoading}
         onSubmit={handleSubmit}
       />

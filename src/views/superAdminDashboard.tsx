@@ -7,28 +7,35 @@ import Card, {
 } from "@/components/card";
 import { R } from "@/constants/R";
 
-const adminCards = [
+const summaryCards = [
   {
-    id: "users",
-    label: "Users",
-    description: "Manage admin users and review account access.",
-    href: R.protected.admin.user,
-    cta: "Open users",
+    id: "organizations",
+    label: "Organizations",
+    description: "View and manage organizations from the super admin workspace.",
+    href: R.protected.superAdmin.organizations,
+    cta: "Open organizations",
   },
   {
     id: "customers",
     label: "Customers",
-    description: "Review and manage customer accounts from the admin workspace.",
-    href: R.protected.admin.customers,
+    description: "Review customer accounts across all organizations.",
+    href: R.protected.superAdmin.customers,
     cta: "Open customers",
+  },
+  {
+    id: "logs",
+    label: "Audit Logs",
+    description: "Inspect platform-wide audit activity and system events.",
+    href: R.protected.superAdmin.logs,
+    cta: "Open logs",
   },
 ];
 
-export default function DashboardPage() {
+export default function SuperAdminDashboardPage() {
   return (
     <section className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2">
-        {adminCards.map((item) => (
+      <div className="grid gap-4 md:grid-cols-3">
+        {summaryCards.map((item) => (
           <Link key={item.id} href={item.href} className="group block">
             <Card className="h-full transition-transform transition-shadow group-hover:-translate-y-0.5 group-hover:shadow-md">
               <CardHeader>

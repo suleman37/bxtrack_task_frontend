@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 
 const Token = 'token';
+const Role = 'role';
 const authCookieOptions = {
   path: '/',
   sameSite: 'lax' as const,
@@ -15,3 +16,13 @@ export const removeAuthTokenCookie = () => {
 };
 
 export const getAuthTokenCookie = () => Cookies.get(Token);
+
+export const setAuthRoleCookie = (role: string) => {
+  Cookies.set(Role, role, authCookieOptions);
+};
+
+export const removeAuthRoleCookie = () => {
+  Cookies.remove(Role, authCookieOptions);
+};
+
+export const getAuthRoleCookie = () => Cookies.get(Role);

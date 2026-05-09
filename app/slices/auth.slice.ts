@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
 import {
+  removeAuthRoleCookie,
   removeAuthTokenCookie,
   setAuthTokenCookie,
 } from '@/services/cookie.service';
@@ -28,6 +29,7 @@ const authSlice = createSlice({
       state.token = null;
       state.isLoggingOut = false;
       removeAuthTokenCookie();
+      removeAuthRoleCookie();
     },
     startLogout(state) {
       state.isLoggingOut = true;
@@ -36,6 +38,7 @@ const authSlice = createSlice({
       state.token = null;
       state.isLoggingOut = false;
       removeAuthTokenCookie();
+      removeAuthRoleCookie();
     },
   },
 });

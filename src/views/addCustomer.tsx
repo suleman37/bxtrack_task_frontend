@@ -21,7 +21,7 @@ export default function AddCustomerPage() {
         </div>
 
         <Link
-          href={R.protected.customers}
+          href={R.protected.admin.customers}
           className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-950"
         >
           Back to customers
@@ -29,9 +29,9 @@ export default function AddCustomerPage() {
       </div>
 
       <CustomerForm
-        cancelHref={R.protected.customers}
+        cancelHref={R.protected.admin.customers}
         onSubmit={async () => {
-          router.push(R.protected.customers);
+          router.push(R.protected.admin.customers);
         }}
       />
     </section>

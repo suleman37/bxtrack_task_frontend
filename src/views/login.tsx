@@ -5,8 +5,9 @@ import { useDispatch } from "react-redux";
 import { setToken } from "@/app/slices/auth.slice";
 import type { AppDispatch } from "@/app/store";
 import LoginForm from "@/src/components/loginFrom/login";
-import { R } from "@/constants/R";
+import { getDashboardRouteByRole, normalizeUserRole } from "@/lib/auth";
 import type { LoginFormType } from "@/schemas/login.dto";
+import { removeAuthRoleCookie, setAuthRoleCookie } from "@/services/cookie.service";
 import { useLoginMutation } from "@/services/auth.service";
 
 const LoginPage = () => {
@@ -16,12 +17,21 @@ const LoginPage = () => {
 
   async function handleSubmit(values: LoginFormType) {
     const response = await login(values).unwrap();
-    
+
     if (response.Token) {
       dispatch(setToken(response.Token));
     }
 
-    router.push(R.protected.prefix);
+    const role = normalizeUserRole(
+      response.role
+    );
+    if (role) {
+      setAuthRoleCookie(role);
+    } else {
+      removeAuthRoleCookie();
+    }
+
+    router.push(getDashboardRouteByRole(role));
   }
 
   return <LoginForm onSubmit={handleSubmit} isSubmitting={isLoading} />;

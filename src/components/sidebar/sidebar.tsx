@@ -3,10 +3,11 @@
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
-import { sidebarNavItems } from "@/src/components/sidebar/navItems";
+import type { SidebarNavItem } from "@/src/components/sidebar/navItems";
 
 type SidebarProps = {
   isPending?: boolean;
+  items: SidebarNavItem[];
   onLogout: () => void;
   pathname: string;
 };
@@ -17,6 +18,7 @@ function isActivePath(pathname: string, href: string) {
 
 export default function Sidebar({
   isPending,
+  items,
   onLogout,
   pathname,
 }: SidebarProps) {
@@ -31,7 +33,7 @@ export default function Sidebar({
 
         <nav className="flex-1 px-4 py-5">
           <ul className="space-y-2">
-            {sidebarNavItems.map((item) => {
+            {items.map((item) => {
               const active = isActivePath(pathname, item.href);
               const Icon = item.icon;
 

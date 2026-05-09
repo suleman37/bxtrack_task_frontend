@@ -8,7 +8,7 @@ import { clearToken } from "@/app/slices/auth.slice";
 import type { AppDispatch } from "@/app/store";
 import { R } from "@/constants/R";
 import Sidebar from "@/src/components/sidebar/sidebar";
-import { sidebarNavItems } from "@/src/components/sidebar/navItems";
+import { getSidebarNavItems } from "@/src/components/sidebar/navItems";
 
 type ProtectedShellProps = {
   children: ReactNode;
@@ -23,6 +23,7 @@ export default function ProtectedShell({ children }: ProtectedShellProps) {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [isPending, startTransition] = useTransition();
+  const sidebarNavItems = getSidebarNavItems(pathname);
   const activeItem =
     sidebarNavItems.find((item) => isActivePath(pathname, item.href)) ??
     sidebarNavItems[0];
@@ -39,6 +40,7 @@ export default function ProtectedShell({ children }: ProtectedShellProps) {
     <div className="min-h-screen bg-zinc-100 text-zinc-900">
       <div className="flex min-h-screen flex-col md:flex-row">
         <Sidebar
+          items={sidebarNavItems}
           pathname={pathname}
           onLogout={handleLogout}
           isPending={isPending}

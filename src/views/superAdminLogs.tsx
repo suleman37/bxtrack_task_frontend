@@ -24,7 +24,6 @@ export default function SuperAdminLogsPage() {
     }
 
     return [
-      log.createdByName,
       log.action,
       log.details,
       log.organizationName,
@@ -60,10 +59,6 @@ export default function SuperAdminLogsPage() {
             header: "Index",
             render: (_, rowIndex) =>
               (pagination.page - 1) * pagination.limit + rowIndex + 1,
-          },
-          {
-            header: "Created By",
-            render: (log) => log.createdByName,
           },
           {
             header: "Action",

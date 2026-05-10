@@ -20,6 +20,12 @@ import {
   useCreateCustomerNoteMutation,
   useDeleteCustomerMutation,
 } from "@/services/customer.service";
+import type { PaginationModel } from "@/models/pagination.model";
+import {
+  DEFAULT_PAGE_LIMIT,
+  resolvePagination,
+  shouldSkipPageChange,
+} from "@/utility/pagination";
 
 type CustomerTableActionsProps = {
   customerId: number;
@@ -27,16 +33,21 @@ type CustomerTableActionsProps = {
   customerStatus?: string;
 };
 
-type CustomerNoteInput = {
-  notes: string;
-  isSaved: boolean;
-};
-
 type CustomerNotesResponse =
   | { notes?: string; data?: unknown }
+  | { notes?: unknown; items?: unknown; rows?: unknown; results?: unknown }
   | { notes?: string }[]
   | string[]
   | unknown;
+
+const initialNotesPagination: PaginationModel = {
+  page: 1,
+  limit: DEFAULT_PAGE_LIMIT,
+  total: 0,
+  totalPages: 1,
+  hasNextPage: false,
+  hasPreviousPage: false,
+};
 
 export default function CustomerTableActions({
   customerId,
@@ -47,9 +58,10 @@ export default function CustomerTableActions({
   const actingOrganizationId = useSelector(selectActingOrganizationId);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isLoadingNotes, setIsLoadingNotes] = useState(false);
-  const [notes, setNotes] = useState<CustomerNoteInput[]>([
-    { notes: "", isSaved: false },
-  ]);
+  const [savedNotes, setSavedNotes] = useState<string[]>([]);
+  const [draftNotes, setDraftNotes] = useState<string[]>([""]);
+  const [notesPagination, setNotesPagination] =
+    useState<PaginationModel>(initialNotesPagination);
   const [createCustomerNote, { isLoading: isSavingNotes }] =
     useCreateCustomerNoteMutation();
   const [deleteCustomer, { isLoading: isDeletingCustomer }] =
@@ -75,9 +87,45 @@ export default function CustomerTableActions({
       Array.isArray(payload.data)
     ) {
       list = payload.data;
+    } else if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "notes" in payload &&
+      Array.isArray(payload.notes)
+    ) {
+      list = payload.notes;
+    } else if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "items" in payload &&
+      Array.isArray(payload.items)
+    ) {
+      list = payload.items;
+    } else if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "rows" in payload &&
+      Array.isArray(payload.rows)
+    ) {
+      list = payload.rows;
+    } else if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "results" in payload &&
+      Array.isArray(payload.results)
+    ) {
+      list = payload.results;
+    } else if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "data" in payload &&
+      typeof payload.data === "object" &&
+      payload.data !== null
+    ) {
+      return normalizeNotesResponse(payload.data);
     }
 
-    const normalizedNotes = list
+    return list
       .map((item) => {
         if (typeof item === "string") {
           return item;
@@ -94,16 +142,10 @@ export default function CustomerTableActions({
 
         return "";
       })
-      .filter((note) => note.trim().length > 0)
-      .map((note) => ({ notes: note, isSaved: true }));
-
-    return normalizedNotes.length > 0
-      ? normalizedNotes
-      : [{ notes: "", isSaved: false }];
+      .filter((note) => note.trim().length > 0);
   }
 
-  async function handleOpenNotes() {
-    setIsNotesOpen(true);
+  async function loadNotes(page: number) {
     setIsLoadingNotes(true);
 
     try {
@@ -129,11 +171,16 @@ export default function CustomerTableActions({
         headers.set("X-Organization-Id", String(organizationId));
       }
 
+      const queryParams = new URLSearchParams({
+        page: String(page),
+        limit: String(DEFAULT_PAGE_LIMIT),
+      });
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${endpoints.customers.getNotes.replace(
           ":id",
           String(customerId)
-        )}`,
+        )}?${queryParams.toString()}`,
         {
           headers,
           method: "GET",
@@ -146,14 +193,28 @@ export default function CustomerTableActions({
         throw new Error();
       }
 
-      setNotes(normalizeNotesResponse(data));
-    } catch {
-      setNotes((previousNotes) =>
-        previousNotes.length ? previousNotes : [{ notes: "", isSaved: false }]
+      const normalizedNotes = normalizeNotesResponse(data);
+
+      setSavedNotes(normalizedNotes);
+      setNotesPagination(
+        resolvePagination(data, normalizedNotes.length, page, DEFAULT_PAGE_LIMIT)
       );
+    } catch {
+      setSavedNotes([]);
+      setNotesPagination({
+        ...initialNotesPagination,
+        page,
+        hasPreviousPage: page > 1,
+      });
     } finally {
       setIsLoadingNotes(false);
     }
+  }
+
+  async function handleOpenNotes() {
+    setIsNotesOpen(true);
+    setDraftNotes([""]);
+    await loadNotes(1);
   }
 
   function handleCloseNotes() {
@@ -161,36 +222,30 @@ export default function CustomerTableActions({
   }
 
   function handleAddNote() {
-    setNotes((previousNotes) => [
-      ...previousNotes,
-      { notes: "", isSaved: false },
-    ]);
+    setDraftNotes((previousNotes) => [...previousNotes, ""]);
   }
 
   function handleChangeNote(index: number, value: string) {
-    setNotes((previousNotes) =>
+    setDraftNotes((previousNotes) =>
       previousNotes.map((note, noteIndex) =>
-        noteIndex === index ? { ...note, notes: value } : note
+        noteIndex === index ? value : note
       )
     );
   }
 
   function handleRemoveNote(index: number) {
-    setNotes((previousNotes) => {
+    setDraftNotes((previousNotes) => {
       const remainingNotes = previousNotes.filter(
         (_, noteIndex) => noteIndex !== index
       );
 
-      return remainingNotes.length > 0
-        ? remainingNotes
-        : [{ notes: "", isSaved: false }];
+      return remainingNotes.length > 0 ? remainingNotes : [""];
     });
   }
 
   async function handleSaveNotes() {
-    const payload = notes
-      .filter((note) => !note.isSaved)
-      .map((note) => note.notes.trim())
+    const payload = draftNotes
+      .map((note) => note.trim())
       .filter((note) => note.length > 0);
 
     if (!payload.length) {
@@ -204,12 +259,16 @@ export default function CustomerTableActions({
       )
     );
 
-    setNotes((previousNotes) =>
-      previousNotes.map((note) =>
-        note.notes.trim() ? { ...note, isSaved: true } : note
-      )
-    );
+    setDraftNotes([""]);
     handleCloseNotes();
+  }
+
+  function handleNotesPageChange(page: number) {
+    if (shouldSkipPageChange(page, notesPagination)) {
+      return;
+    }
+
+    void loadNotes(page);
   }
 
   return (
@@ -234,11 +293,15 @@ export default function CustomerTableActions({
       <CustomerNotesModal
         isOpen={isNotesOpen}
         customerName={customerName}
+        isLoading={isLoadingNotes}
         isSaving={isSavingNotes || isLoadingNotes}
-        notes={notes.map((note) => note.notes)}
+        draftNotes={draftNotes}
+        pagination={notesPagination}
+        savedNotes={savedNotes}
         onAddNote={handleAddNote}
         onChangeNote={handleChangeNote}
         onClose={handleCloseNotes}
+        onPageChange={handleNotesPageChange}
         onRemoveNote={handleRemoveNote}
         onSave={handleSaveNotes}
       />

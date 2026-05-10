@@ -1,3 +1,5 @@
+import type { PaginationModel } from "@/models/pagination.model";
+
 export type CustomerModel = {
   id: number;
   name: string;
@@ -7,16 +9,7 @@ export type CustomerModel = {
   status?: string;
 };
 
-export type CustomerPaginationModel = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-};
-
 export type CustomerListModel = {
   customers: CustomerModel[];
-  pagination: CustomerPaginationModel;
+  pagination: PaginationModel;
 };

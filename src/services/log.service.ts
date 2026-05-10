@@ -1,7 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { endpoints } from "@/constants/endpoints";
-import type { LogModel } from "@/models/log.model";
+import type { LogListModel, LogModel } from "@/models/log.model";
 import { baseQuery } from "@/utility/baseQuery";
+import {
+  DEFAULT_PAGE_LIMIT,
+  resolvePagination,
+} from "@/utility/pagination";
+
+type LogQueryParams = {
+  page?: number;
+  limit?: number;
+};
 
 type RawLog = {
   id: string | number;
@@ -17,7 +26,15 @@ type RawLog = {
   updatedAt: string;
 };
 
-type RawLogsResponse = RawLog[] | { data?: RawLog[]; logs?: RawLog[] };
+type RawLogsResponse =
+  | RawLog[]
+  | {
+      data?: unknown;
+      logs?: unknown;
+      items?: unknown;
+      rows?: unknown;
+      results?: unknown;
+    };
 
 function resolveLogs(payload: RawLogsResponse): RawLog[] {
   if (Array.isArray(payload)) {
@@ -30,6 +47,22 @@ function resolveLogs(payload: RawLogsResponse): RawLog[] {
 
   if (Array.isArray(payload.logs)) {
     return payload.logs;
+  }
+
+  if (Array.isArray(payload.items)) {
+    return payload.items as RawLog[];
+  }
+
+  if (Array.isArray(payload.rows)) {
+    return payload.rows as RawLog[];
+  }
+
+  if (Array.isArray(payload.results)) {
+    return payload.results as RawLog[];
+  }
+
+  if (typeof payload.data === "object" && payload.data !== null) {
+    return resolveLogs(payload.data as RawLogsResponse);
   }
 
   return [];
@@ -73,10 +106,24 @@ const logApi = createApi({
   reducerPath: "logApi",
   baseQuery,
   endpoints: (builder) => ({
-    getLogs: builder.query<LogModel[], void>({
-      query: () => endpoints.logs.getAll,
-      transformResponse: (response: RawLogsResponse) =>
-        resolveLogs(response).map(mapLog),
+    getLogs: builder.query<LogListModel, LogQueryParams | void>({
+      query: (params) => ({
+        url: endpoints.logs.getAll,
+        params: {
+          page: params?.page ?? 1,
+          limit: params?.limit ?? DEFAULT_PAGE_LIMIT,
+        },
+      }),
+      transformResponse: (response: RawLogsResponse, _meta, arg) => {
+        const page = arg?.page ?? 1;
+        const limit = arg?.limit ?? DEFAULT_PAGE_LIMIT;
+        const logs = resolveLogs(response).map(mapLog);
+
+        return {
+          logs,
+          pagination: resolvePagination(response, logs.length, page, limit),
+        };
+      },
     }),
   }),
 });

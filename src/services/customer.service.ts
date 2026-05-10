@@ -3,13 +3,16 @@ import { endpoints } from "@/constants/endpoints";
 import type {
   CustomerListModel,
   CustomerModel,
-  CustomerPaginationModel,
 } from "@/models/customer.model";
 import type { CustomerFormType } from "@/schemas/customer.dto";
 import { showToastForMutation } from "@/utility/apiToast";
 import { baseQuery } from "@/utility/baseQuery";
+import {
+  DEFAULT_PAGE_LIMIT,
+  resolvePagination,
+} from "@/utility/pagination";
 
-const CUSTOMER_PAGE_SIZE = 10;
+const CUSTOMER_PAGE_SIZE = DEFAULT_PAGE_LIMIT;
 
 type RawCustomer = {
   id?: number | string;
@@ -39,22 +42,6 @@ type RawCustomerCollection = {
   items?: unknown;
   rows?: unknown;
   results?: unknown;
-  page?: unknown;
-  currentPage?: unknown;
-  limit?: unknown;
-  perPage?: unknown;
-  total?: unknown;
-  totalItems?: unknown;
-  totalCount?: unknown;
-  totalPages?: unknown;
-  lastPage?: unknown;
-  hasNextPage?: unknown;
-  hasPreviousPage?: unknown;
-  hasPrevPage?: unknown;
-  hasNext?: unknown;
-  hasPrev?: unknown;
-  pagination?: unknown;
-  meta?: unknown;
 };
 
 type RawCustomersResponse = RawCustomer[] | RawCustomerCollection;
@@ -101,108 +88,6 @@ function resolveCustomers(payload: RawCustomersResponse): RawCustomer[] {
   }
 
   return getCustomerListFromRecord(payload);
-}
-
-function toPositiveNumber(value: unknown, fallback: number): number {
-  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value);
-
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-
-  return fallback;
-}
-
-function toBoolean(value: unknown, fallback: boolean): boolean {
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  return fallback;
-}
-
-function getPaginationRecord(payload: RawCustomersResponse): RawCustomerCollection | null {
-  if (Array.isArray(payload)) {
-    return null;
-  }
-
-  if (typeof payload.pagination === "object" && payload.pagination !== null) {
-    return payload.pagination as RawCustomerCollection;
-  }
-
-  if (typeof payload.meta === "object" && payload.meta !== null) {
-    return payload.meta as RawCustomerCollection;
-  }
-
-  if (
-    typeof payload.data === "object" &&
-    payload.data !== null &&
-    !Array.isArray(payload.data)
-  ) {
-    return payload.data as RawCustomerCollection;
-  }
-
-  return payload;
-}
-
-function resolvePagination(
-  payload: RawCustomersResponse,
-  customerCount: number,
-  requestedPage: number,
-  requestedLimit: number
-): CustomerPaginationModel {
-  const source = getPaginationRecord(payload);
-
-  if (!source) {
-    return {
-      page: requestedPage,
-      limit: requestedLimit,
-      total: customerCount,
-      totalPages: customerCount > 0 ? 1 : 1,
-      hasNextPage: false,
-      hasPreviousPage: requestedPage > 1,
-    };
-  }
-
-  const page = toPositiveNumber(
-    source.page ?? source.currentPage,
-    requestedPage
-  );
-  const limit = toPositiveNumber(
-    source.limit ?? source.perPage,
-    requestedLimit
-  );
-  const total = toPositiveNumber(
-    source.total ?? source.totalItems ?? source.totalCount,
-    customerCount
-  );
-  const totalPages = toPositiveNumber(
-    source.totalPages ?? source.lastPage,
-    Math.max(1, Math.ceil(total / limit))
-  );
-  const hasPreviousPage = toBoolean(
-    source.hasPreviousPage ?? source.hasPrevPage ?? source.hasPrev,
-    page > 1
-  );
-  const hasNextPage = toBoolean(
-    source.hasNextPage ?? source.hasNext,
-    page < totalPages
-  );
-
-  return {
-    page,
-    limit,
-    total,
-    totalPages,
-    hasNextPage,
-    hasPreviousPage,
-  };
 }
 
 function resolveAssignedToName(customer: RawCustomer): string {

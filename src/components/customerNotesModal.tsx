@@ -9,14 +9,20 @@ import Card, {
   CardHeader,
   CardTitle,
 } from "@/components/card";
+import type { PaginationModel } from "@/models/pagination.model";
+
 type CustomerNotesModalProps = {
   isOpen: boolean;
   customerName: string;
+  isLoading?: boolean;
   isSaving?: boolean;
-  notes: string[];
+  draftNotes: string[];
+  savedNotes: string[];
+  pagination: PaginationModel;
   onAddNote: () => void;
   onChangeNote: (index: number, value: string) => void;
   onClose: () => void;
+  onPageChange: (page: number) => void;
   onRemoveNote: (index: number) => void;
   onSave: () => void | Promise<void>;
 };
@@ -24,11 +30,15 @@ type CustomerNotesModalProps = {
 export default function CustomerNotesModal({
   isOpen,
   customerName,
+  isLoading = false,
   isSaving = false,
-  notes,
+  draftNotes,
+  savedNotes,
+  pagination,
   onAddNote,
   onChangeNote,
   onClose,
+  onPageChange,
   onRemoveNote,
   onSave,
 }: CustomerNotesModalProps) {
@@ -90,13 +100,24 @@ export default function CustomerNotesModal({
 
         <CardContent className="overflow-y-auto px-3 py-3">
           <div className="space-y-3">
-            {notes.map((note, index) => (
-              <div key={index} className="flex items-center gap-3">
+            {savedNotes.map((note, index) => (
+              <textarea
+                key={`saved-${index}`}
+                className="min-h-11 w-full resize-none rounded-[8px] border-transparent bg-zinc-100 px-3 py-3 text-sm text-zinc-700 outline-none"
+                value={note}
+                readOnly
+                placeholder={`Saved note ${index + 1}`}
+                rows={1}
+              />
+            ))}
+
+            {draftNotes.map((note, index) => (
+              <div key={`draft-${index}`} className="flex items-center gap-3">
                 <textarea
                   className="min-h-11 w-full resize-none rounded-[8px] border-transparent bg-zinc-50 px-3 py-3 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-transparent"
                   value={note}
                   onChange={(event) => onChangeNote(index, event.target.value)}
-                  placeholder={`Note ${index + 1}`}
+                  placeholder={`New note ${index + 1}`}
                   rows={1}
                 />
 
@@ -121,10 +142,40 @@ export default function CustomerNotesModal({
                 </button>
               </div>
             ))}
+
+            {isLoading && savedNotes.length === 0 ? (
+              <p className="text-sm text-zinc-500">Loading notes...</p>
+            ) : null}
           </div>
         </CardContent>
 
-        <CardFooter className="mt-0 px-3 py-2">
+        <CardFooter className="mt-0 flex-col items-stretch gap-3 px-3 py-2">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-zinc-600">
+              Page {pagination.page} of {pagination.totalPages} - {pagination.total}{" "}
+              note{pagination.total === 1 ? "" : "s"}
+            </p>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-zinc-200 px-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:pointer-events-none disabled:opacity-50"
+                disabled={!pagination.hasPreviousPage}
+                onClick={() => onPageChange(pagination.page - 1)}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-zinc-200 px-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:pointer-events-none disabled:opacity-50"
+                disabled={!pagination.hasNextPage}
+                onClick={() => onPageChange(pagination.page + 1)}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
           <Button className="text-white" disabled={isSaving} onClick={onSave}>
             Save Notes
           </Button>

@@ -8,11 +8,11 @@ import {
   selectCustomersPagination,
 } from "@/app/slices/customer.slice";
 import type { AppDispatch } from "@/app/store";
-import Button from "@/components/button";
 import CustomerTableActions from "@/components/customerTableActions";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
+import { shouldSkipPageChange } from "@/utility/pagination";
 
 export default function CustomersPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,7 +20,7 @@ export default function CustomersPage() {
   const pagination = useSelector(selectCustomersPagination);
 
   function handlePageChange(page: number) {
-    if (page === pagination.page || page < 1 || page > pagination.totalPages) {
+    if (shouldSkipPageChange(page, pagination)) {
       return;
     }
 
@@ -44,7 +44,8 @@ export default function CustomersPage() {
         columns={[
           {
             header: "Index",
-            render: (_, rowIndex) => rowIndex + 1,
+            render: (_, rowIndex) =>
+              (pagination.page - 1) * pagination.limit + rowIndex + 1,
           },
           {
             header: "Name",
@@ -84,20 +85,22 @@ export default function CustomersPage() {
             </p>
 
             <div className="flex items-center gap-2">
-              <Button
-                className="h-10 rounded-lg bg-zinc-700 px-4 text-white hover:bg-zinc-800"
+              <button
+                type="button"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-zinc-200 px-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:pointer-events-none disabled:opacity-50"
                 disabled={!pagination.hasPreviousPage}
                 onClick={() => handlePageChange(pagination.page - 1)}
               >
                 Previous
-              </Button>
-              <Button
-                className="h-10 rounded-lg px-4"
+              </button>
+              <button
+                type="button"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-zinc-200 px-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:pointer-events-none disabled:opacity-50"
                 disabled={!pagination.hasNextPage}
                 onClick={() => handlePageChange(pagination.page + 1)}
               >
                 Next
-              </Button>
+              </button>
             </div>
           </div>
         }

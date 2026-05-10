@@ -12,6 +12,8 @@ export const endpoints = {
     getById: "/customers/:id",
     create: "/customers",
     delete: "/customers/:id",
+    getNotes: "/customers/:id/notes",
+    createNote: "/customers/:id/notes",
   },
   logs: {
     getAll: "/logs",

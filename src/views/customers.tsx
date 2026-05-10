@@ -6,28 +6,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectActingOrganizationId } from "@/app/slices/auth.slice";
 import { fetchCustomers, selectCustomers } from "@/app/slices/customer.slice";
 import type { AppDispatch } from "@/app/store";
-import DeleteAction from "@/components/deleteAction";
-import NoteAction from "@/components/noteAction";
+import CustomerTableActions from "@/components/customerTableActions";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
-import { useDeleteCustomerMutation } from "@/services/customer.service";
 
 export default function CustomersPage() {
   const dispatch = useDispatch<AppDispatch>();
   const customers = useSelector(selectCustomers);
   const actingOrganizationId = useSelector(selectActingOrganizationId);
-  const [deleteCustomer, { isLoading: isDeletingCustomer }] =
-    useDeleteCustomerMutation();
 
   useEffect(() => {
     dispatch(fetchCustomers(true));
   }, [dispatch, actingOrganizationId]);
-
-  async function handleDeleteCustomer(customerId: number) {
-    await deleteCustomer(customerId).unwrap();
-    dispatch(fetchCustomers(true));
-  }
 
   return (
     <section className="space-y-6">
@@ -67,17 +58,10 @@ export default function CustomersPage() {
           {
             header: "Actions",
             render: (customer) => (
-              <div className="flex items-center gap-2">
-                <NoteAction
-                  ariaLabel="Customer notes"
-                  onClick={() => console.log("Customer notes:", customer)}
-                />
-                <DeleteAction
-                  ariaLabel="Delete customer"
-                  disabled={isDeletingCustomer}
-                  onClick={() => handleDeleteCustomer(customer.id)}
-                />
-              </div>
+              <CustomerTableActions
+                customerId={customer.id}
+                customerName={customer.name}
+              />
             ),
           },
         ]}

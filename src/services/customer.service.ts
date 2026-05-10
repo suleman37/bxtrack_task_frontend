@@ -18,6 +18,16 @@ const customerApi = createApi({
         body,
       }),
     }),
+    createCustomerNote: builder.mutation<
+      void,
+      { customerId: number; notes: string }
+    >({
+      query: ({ customerId, ...body }) => ({
+        url: endpoints.customers.createNote.replace(":id", String(customerId)),
+        method: "POST",
+        body,
+      }),
+    }),
     deleteCustomer: builder.mutation<void, number>({
       query: (id) => ({
         url: endpoints.customers.delete.replace(":id", String(id)),
@@ -29,6 +39,7 @@ const customerApi = createApi({
 
 export const {
   useCreateCustomerMutation,
+  useCreateCustomerNoteMutation,
   useDeleteCustomerMutation,
   useGetCustomersQuery,
 } = customerApi;

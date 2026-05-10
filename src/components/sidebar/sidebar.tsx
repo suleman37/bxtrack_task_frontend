@@ -20,7 +20,7 @@ export default function Sidebar({
       <div className="flex h-full flex-col">
         <div className="border-b border-zinc-800 px-6 py-4.5">
           <h1 className="text-xl font-semibold tracking-tight text-white">
-            Admin Panel
+           BX Track Task
           </h1>
         </div>
 

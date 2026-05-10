@@ -1,8 +1,7 @@
 export type CustomerModel = {
-  id: string;
+  id: number;
   name: string;
   email: string;
   phone: string;
-  organizationId: string;
-  assignedTo: string;
+  assignedToName: string;
 };

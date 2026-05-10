@@ -1,5 +1,5 @@
-import DashboardPage from "@/views/dashboard";
+import OrgDashboardPage from "@/views/orgDashboard";
 
 export default function Page() {
-  return <DashboardPage />;
+  return <OrgDashboardPage />;
 }

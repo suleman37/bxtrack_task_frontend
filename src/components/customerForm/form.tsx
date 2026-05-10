@@ -2,7 +2,11 @@
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
+import type { AppDispatch } from "@/app/store";
 import Button from "@/components/button";
 import Card, {
   CardContent
@@ -17,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/form";
 import Input from "@/components/input";
+import { UserRole } from "@/enums/userRole.enum";
 import { cn } from "@/lib/cn";
 import { customerSchema, type CustomerFormType } from "@/schemas/customer.dto";
 
@@ -31,9 +36,18 @@ export default function CustomerForm({
   isSubmitting,
   onSubmit,
 }: CustomerFormProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const users = useSelector(selectUsers);
   const form = useForm<CustomerFormType>({
     resolver: yupResolver(customerSchema),
   });
+  const assignableUsers = users.filter((user) => user.role === UserRole.User);
+
+  useEffect(() => {
+    if (users.length === 0) {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, users.length]);
 
   return (
     <Card>
@@ -113,45 +127,35 @@ export default function CustomerForm({
 
               <FormField
                 control={form.control}
-                name="organizationId"
+                name="assignedTo"
                 render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>Organization ID</FormLabel>
+                    <FormLabel>Assigned To</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Enter organization ID"
+                      <select
                         className={cn(
+                          "h-11 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition-colors focus:border-zinc-950",
                           fieldState.error && "border-red-600 focus:border-red-600"
                         )}
-                        {...field}
-                        value={field.value}
-                      />
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          field.onChange(value === "" ? undefined : Number(value));
+                        }}
+                        value={field.value ?? ""}
+                      >
+                        <option value="">Select assigned user</option>
+                        {assignableUsers.map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.name}
+                          </option>
+                        ))}
+                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="assignedTo"
-                render={({ field, fieldState }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Assigned To</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter assigned user"
-                        className={cn(
-                          fieldState.error && "border-red-600 focus:border-red-600"
-                        )}
-                        {...field}
-                        value={field.value}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
             <FormActions className="gap-3">

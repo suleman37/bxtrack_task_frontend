@@ -3,21 +3,21 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
+import { selectActingOrganizationId } from "@/app/slices/auth.slice";
 import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
 import type { AppDispatch } from "@/app/store";
-import DeleteUserAction from "@/components/deleteUserAction";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
-import UpdateUserAction from "@/components/updateUserAction";
 
 export default function UsersPage() {
   const dispatch = useDispatch<AppDispatch>();
   const users = useSelector(selectUsers);
+  const actingOrganizationId = useSelector(selectActingOrganizationId);
 
   useEffect(() => {
-     dispatch(fetchUsers());
-  }, [dispatch]);
+    dispatch(fetchUsers());
+  }, [dispatch, actingOrganizationId]);
 
   return (
     <section className="space-y-6">
@@ -50,15 +50,6 @@ export default function UsersPage() {
             header: "Role",
             render: (user) => (
               <span className="capitalize">{user.role}</span>
-            ),
-          },
-          {
-            header: "Actions",
-            render: (user) => (
-              <div className="flex items-center gap-2">
-                <UpdateUserAction user={user} />
-                <DeleteUserAction user={user} />
-              </div>
             ),
           },
         ]}

@@ -1,14 +1,34 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { selectActingOrganizationId } from "@/app/slices/auth.slice";
+import { fetchCustomers, selectCustomers } from "@/app/slices/customer.slice";
+import type { AppDispatch } from "@/app/store";
+import DeleteAction from "@/components/deleteAction";
+import NoteAction from "@/components/noteAction";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
-import type { CustomerModel } from "@/models/customer.model";
-
-const customers: CustomerModel[] = [];
+import { useDeleteCustomerMutation } from "@/services/customer.service";
 
 export default function CustomersPage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const customers = useSelector(selectCustomers);
+  const actingOrganizationId = useSelector(selectActingOrganizationId);
+  const [deleteCustomer, { isLoading: isDeletingCustomer }] =
+    useDeleteCustomerMutation();
+
+  useEffect(() => {
+    dispatch(fetchCustomers());
+  }, [dispatch, actingOrganizationId]);
+
+  async function handleDeleteCustomer(customerId: number) {
+    await deleteCustomer(customerId).unwrap();
+    dispatch(fetchCustomers());
+  }
+
   return (
     <section className="space-y-6">
       <div className="flex justify-end">
@@ -25,6 +45,10 @@ export default function CustomersPage() {
       <DataTable
         columns={[
           {
+            header: "Index",
+            render: (_, rowIndex) => rowIndex + 1,
+          },
+          {
             header: "Name",
             render: (customer) => customer.name,
           },
@@ -37,12 +61,24 @@ export default function CustomersPage() {
             render: (customer) => customer.phone,
           },
           {
-            header: "Organization ID",
-            render: (customer) => customer.organizationId,
+            header: "Assigned To",
+            render: (customer) => customer.assignedToName,
           },
           {
-            header: "Assigned To",
-            render: (customer) => customer.assignedTo,
+            header: "Actions",
+            render: (customer) => (
+              <div className="flex items-center gap-2">
+                <NoteAction
+                  ariaLabel="Customer notes"
+                  onClick={() => console.log("Customer notes:", customer)}
+                />
+                <DeleteAction
+                  ariaLabel="Delete customer"
+                  disabled={isDeletingCustomer}
+                  onClick={() => handleDeleteCustomer(customer.id)}
+                />
+              </div>
+            ),
           },
         ]}
         description="Manage customers from the current protected page."

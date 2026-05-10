@@ -1,9 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useDispatch } from "react-redux";
-import { clearToken } from "@/app/slices/auth.slice";
+import {
+  clearToken,
+  setActingOrganizationId,
+} from "@/app/slices/auth.slice";
 import type { AppDispatch } from "@/app/store";
 import { R } from "@/constants/R";
 import { isSuperAdminPath, isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
@@ -26,6 +30,12 @@ export default function useProtectedShell() {
   const currentRole = normalizeUserRole(getAuthRoleCookie());
   const canReturnToSuperAdmin =
     !isSuperAdminPath(pathname) && isSuperAdminRole(currentRole);
+
+  useEffect(() => {
+    if (isSuperAdminPath(pathname)) {
+      dispatch(setActingOrganizationId(null));
+    }
+  }, [dispatch, pathname]);
 
   function handleLogout() {
     dispatch(clearToken());

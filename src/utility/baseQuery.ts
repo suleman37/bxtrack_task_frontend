@@ -1,14 +1,37 @@
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import toast from "react-hot-toast";
-import { getAuthTokenCookie } from "@/services/cookie.service";
+import { isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
+import {
+  getActingOrganizationIdCookie,
+  getAuthRoleCookie,
+  getAuthTokenCookie,
+} from "@/services/cookie.service";
+
+type StateWithAuth = { auth: { actingOrganizationId: number | null } };
+
+function resolveActingOrganizationId(getState: () => unknown): number | null {
+  const fromState = (getState() as StateWithAuth).auth?.actingOrganizationId;
+  if (fromState !== undefined && fromState !== null) {
+    return fromState;
+  }
+  const raw = getActingOrganizationIdCookie();
+  if (!raw) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BACKEND_BASE_URL,
-  prepareHeaders: (headers) => {
+  prepareHeaders: (headers, { getState }) => {
     const token = getAuthTokenCookie();
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
+    }
+    const role = normalizeUserRole(getAuthRoleCookie());
+    const actingOrgId = resolveActingOrganizationId(getState);
+    if (token && isSuperAdminRole(role) && actingOrgId !== null) {
+      headers.set("X-Organization-Id", String(actingOrgId));
     }
     return headers;
   },

@@ -181,7 +181,9 @@ const customerApi = createApi({
         body,
       }),
       async onQueryStarted(_arg, { queryFulfilled }) {
-        await showToastForMutation(queryFulfilled);
+        await showToastForMutation(queryFulfilled, {
+          successMessage: "Note added successfully.",
+        });
       },
     }),
     deleteCustomer: builder.mutation<void, number>({

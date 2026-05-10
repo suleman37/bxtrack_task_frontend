@@ -1,3 +1,4 @@
+import type { MutationToastOptions } from "@/models/mutationToastOptions.model";
 import { showErrorToast, showSuccessToast } from "@/utility/toast";
 
 function extractApiMessage(payload: unknown): string | undefined {
@@ -29,17 +30,20 @@ function resolveRejectedPayload(error: unknown) {
 }
 
 export async function showToastForMutation(
-  queryFulfilled: Promise<{ data: unknown }>
+  queryFulfilled: Promise<{ data: unknown }>,
+  options: MutationToastOptions = {}
 ) {
   try {
     const { data } = await queryFulfilled;
-    const message = extractApiMessage(data);
+    const message = extractApiMessage(data) ?? options.successMessage?.trim();
 
     if (message) {
       showSuccessToast(message);
     }
   } catch (error) {
-    const message = extractApiMessage(resolveRejectedPayload(error));
+    const message =
+      extractApiMessage(resolveRejectedPayload(error)) ??
+      options.errorMessage?.trim();
 
     if (message) {
       showErrorToast(message);

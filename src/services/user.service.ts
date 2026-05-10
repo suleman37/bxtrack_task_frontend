@@ -16,9 +16,9 @@ type UserQueryParams = {
 };
 
 type RawUser = Partial<UserModel> & {
-  created_by_id?: number | null;
-  organization_id?: number | null;
-  organization_name?: string | null;
+  created_by_id?: number;
+  organization_id?: number;
+  organization_name?: string;
 };
 
 type RawUsersResponse =
@@ -69,10 +69,9 @@ function mapUser(user: RawUser): UserModel {
     name: user.name ?? "",
     email: user.email ?? "",
     role: user.role ?? "",
-    createdById: user.createdById ?? user.created_by_id ?? null,
-    organizationId: user.organizationId ?? user.organization_id ?? null,
-    organizationName:
-      user.organizationName ?? user.organization_name ?? null,
+    createdById: user.createdById ?? user.created_by_id,
+    organizationId: user.organizationId ?? user.organization_id,
+    organizationName: user.organizationName ?? user.organization_name,
   };
 }
 

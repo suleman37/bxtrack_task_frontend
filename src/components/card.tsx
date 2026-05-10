@@ -1,9 +1,9 @@
-import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
-
-type CardSectionProps = HTMLAttributes<HTMLDivElement>;
-type CardTitleProps = HTMLAttributes<HTMLHeadingElement>;
-type CardDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
+import type {
+  CardDescriptionProps,
+  CardSectionProps,
+  CardTitleProps,
+} from "@/models/cardProps.model";
 
 export function Card({ className, ...props }: CardSectionProps) {
   return (

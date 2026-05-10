@@ -1,8 +1,8 @@
 import { showErrorToast, showSuccessToast } from "@/utility/toast";
 
-function extractApiMessage(payload: unknown): string | null {
+function extractApiMessage(payload: unknown): string | undefined {
   if (typeof payload !== "object" || payload === null) {
-    return null;
+    return undefined;
   }
 
   if ("message" in payload && typeof payload.message === "string") {
@@ -17,7 +17,7 @@ function extractApiMessage(payload: unknown): string | null {
     return extractApiMessage(payload.data);
   }
 
-  return null;
+  return undefined;
 }
 
 function resolveRejectedPayload(error: unknown) {

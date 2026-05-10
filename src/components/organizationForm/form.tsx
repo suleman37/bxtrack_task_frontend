@@ -16,13 +16,7 @@ import {
 import Input from "@/components/input";
 import useOrganizationForm from "@/hooks/useOrganizationForm";
 import usePasswordVisibility from "@/hooks/usePasswordVisibility";
-import type { OrganizationFormType } from "@/schemas/organization.dto";
-
-type OrganizationFormProps = {
-  cancelHref: string;
-  isSubmitting?: boolean;
-  onSubmit: (values: OrganizationFormType) => void | Promise<void>;
-};
+import type { OrganizationFormProps } from "@/models/organizationFormProps.model";
 
 export default function OrganizationForm({
   cancelHref,

@@ -21,24 +21,15 @@ import {
   useDeleteCustomerMutation,
 } from "@/services/customer.service";
 import type { PaginationModel } from "@/models/pagination.model";
+import type {
+  CustomerNotesResponse,
+  CustomerTableActionsProps,
+} from "@/models/customerTableActions.model";
 import {
   DEFAULT_PAGE_LIMIT,
   resolvePagination,
   shouldSkipPageChange,
 } from "@/utility/pagination";
-
-type CustomerTableActionsProps = {
-  customerId: number;
-  customerName: string;
-  customerStatus?: string;
-};
-
-type CustomerNotesResponse =
-  | { notes?: string; data?: unknown }
-  | { notes?: unknown; items?: unknown; rows?: unknown; results?: unknown }
-  | { notes?: string }[]
-  | string[]
-  | unknown;
 
 const initialNotesPagination: PaginationModel = {
   page: 1,
@@ -153,7 +144,7 @@ export default function CustomerTableActions({
       const role = normalizeUserRole(getAuthRoleCookie());
       const fallbackActingOrgId = getActingOrganizationIdCookie();
       const organizationId =
-        actingOrganizationId ?? (fallbackActingOrgId ? Number(fallbackActingOrgId) : null);
+        actingOrganizationId ?? (fallbackActingOrgId ? Number(fallbackActingOrgId) : undefined);
       const headers = new Headers({
         "Content-Type": "application/json",
       });
@@ -165,7 +156,7 @@ export default function CustomerTableActions({
       if (
         token &&
         isSuperAdminRole(role) &&
-        organizationId !== null &&
+        organizationId !== undefined &&
         Number.isFinite(organizationId)
       ) {
         headers.set("X-Organization-Id", String(organizationId));

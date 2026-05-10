@@ -1,12 +1,7 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-
-type DeleteActionProps = {
-  ariaLabel: string;
-  onClick: () => void | Promise<void>;
-  disabled?: boolean;
-};
+import type { DeleteActionProps } from "@/models/deleteActionProps.model";
 
 export default function DeleteAction({
   ariaLabel,

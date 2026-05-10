@@ -1,12 +1,7 @@
 "use client";
 
 import { RotateCcw } from "lucide-react";
-
-type RestoreActionProps = {
-  ariaLabel: string;
-  onClick: () => void | Promise<void>;
-  disabled?: boolean;
-};
+import type { RestoreActionProps } from "@/models/restoreActionProps.model";
 
 export default function RestoreAction({
   ariaLabel,

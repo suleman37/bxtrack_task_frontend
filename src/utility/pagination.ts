@@ -34,9 +34,9 @@ function toBoolean(value: boolean | undefined, fallback: boolean): boolean {
   return fallback;
 }
 
-function getPaginationRecord(payload: unknown): PaginationRecordModel | null {
+function getPaginationRecord(payload: unknown): PaginationRecordModel | undefined {
   if (typeof payload !== "object" || payload === null || Array.isArray(payload)) {
-    return null;
+    return undefined;
   }
 
   const record = payload as PaginationResponseModel;

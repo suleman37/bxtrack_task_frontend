@@ -2,18 +2,12 @@ import {
   Building2,
   FileText,
   LayoutDashboard,
-  type LucideIcon,
   Users,
   UsersRound,
 } from "lucide-react";
 import { R } from "@/constants/R";
 import { isSuperAdminPath } from "@/lib/auth";
-
-export type SidebarNavItem = {
-  href: string;
-  icon: LucideIcon;
-  label: string;
-};
+import type { SidebarNavItem } from "@/models/sidebarNavItem.model";
 
 export const defaultSidebarNavItems: SidebarNavItem[] = [
   {

@@ -1,14 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { AppDispatch, RootState } from "@/app/store";
-import type { LogModel } from "@/models/log.model";
-import type { PaginationModel } from "@/models/pagination.model";
+import type { LogState } from "@/models/logState.model";
 import { logApi } from "@/services/log.service";
 import { DEFAULT_PAGE_LIMIT } from "@/utility/pagination";
-
-type LogState = {
-  logs: LogModel[];
-  pagination: PaginationModel;
-};
 
 const initialState: LogState = {
   logs: [],

@@ -19,12 +19,8 @@ import {
   FormMessage,
 } from "@/components/form";
 import Input from "@/components/input";
+import type { LoginFormProps } from "@/models/loginFormProps.model";
 import { loginSchema, type LoginFormType } from "@/schemas/login.dto";
-
-type LoginFormProps = {
-  onSubmit: (values: LoginFormType) => void | Promise<void>;
-  isSubmitting?: boolean;
-};
 
 export default function LoginPage({ onSubmit, isSubmitting }: LoginFormProps) {
   const form = useForm<LoginFormType>({

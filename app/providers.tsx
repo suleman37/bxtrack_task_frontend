@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useLayoutEffect } from "react";
 import { Provider, useDispatch } from "react-redux";
 import { setActingOrganizationId } from "@/app/slices/auth.slice";
@@ -8,6 +7,7 @@ import type { AppDispatch } from "@/app/store";
 import { store } from "@/app/store";
 import ToastProvider from "@/components/toaster";
 import { isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
+import type { ProvidersProps } from "@/models/providersProps.model";
 import {
   getActingOrganizationIdCookie,
   getAuthRoleCookie,
@@ -28,10 +28,6 @@ function ActingOrganizationHydration() {
 
   return null;
 }
-
-type ProvidersProps = {
-  children: ReactNode;
-};
 
 export default function Providers({ children }: ProvidersProps) {
   return (

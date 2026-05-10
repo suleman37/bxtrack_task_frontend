@@ -1,11 +1,7 @@
 "use client";
 
 import { Pencil } from "lucide-react";
-
-type EditActionProps = {
-  ariaLabel: string;
-  onClick: () => void;
-};
+import type { EditActionProps } from "@/models/editActionProps.model";
 
 export default function EditAction({
   ariaLabel,

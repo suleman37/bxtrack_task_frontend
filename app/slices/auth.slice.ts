@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
+import type { AuthState } from '@/models/authState.model';
 import {
   removeActingOrganizationIdCookie,
   removeAuthRoleCookie,
@@ -8,16 +9,8 @@ import {
   setAuthTokenCookie,
 } from '@/services/cookie.service';
 
-type AuthState = {
-  token: string | null;
-  isLoggingOut: boolean;
-  actingOrganizationId: number | null;
-};
-
 const initialState: AuthState = {
-  token: null,
   isLoggingOut: false,
-  actingOrganizationId: null,
 };
 
 const authSlice = createSlice({
@@ -27,23 +20,23 @@ const authSlice = createSlice({
     setToken(state, action) {
       state.token = action.payload;
       state.isLoggingOut = false;
-      state.actingOrganizationId = null;
+      state.actingOrganizationId = undefined;
       setAuthTokenCookie(action.payload);
       removeActingOrganizationIdCookie();
     },
-    setActingOrganizationId(state, action: PayloadAction<number | null>) {
+    setActingOrganizationId(state, action: PayloadAction<number | undefined>) {
       const id = action.payload;
       state.actingOrganizationId = id;
-      if (id !== null) {
+      if (id !== undefined) {
         setActingOrganizationIdCookie(String(id));
       } else {
         removeActingOrganizationIdCookie();
       }
     },
     clearToken(state) {
-      state.token = null;
+      state.token = undefined;
       state.isLoggingOut = false;
-      state.actingOrganizationId = null;
+      state.actingOrganizationId = undefined;
       removeAuthTokenCookie();
       removeAuthRoleCookie();
       removeActingOrganizationIdCookie();
@@ -52,9 +45,9 @@ const authSlice = createSlice({
       state.isLoggingOut = true;
     },
     finishLogout(state) {
-      state.token = null;
+      state.token = undefined;
       state.isLoggingOut = false;
-      state.actingOrganizationId = null;
+      state.actingOrganizationId = undefined;
       removeAuthTokenCookie();
       removeAuthRoleCookie();
       removeActingOrganizationIdCookie();

@@ -1,11 +1,7 @@
 "use client";
 
 import { NotebookPen } from "lucide-react";
-
-type NoteActionProps = {
-  ariaLabel: string;
-  onClick: () => void;
-};
+import type { NoteActionProps } from "@/models/noteActionProps.model";
 
 export default function NoteAction({
   ariaLabel,

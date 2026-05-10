@@ -1,7 +1,5 @@
-import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
-
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+import type { ButtonProps } from "@/models/buttonProps.model";
 
 export default function Button({
   className,

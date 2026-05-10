@@ -38,7 +38,7 @@ export default function useProtectedShell() {
 
   useEffect(() => {
     if (isSuperAdminPath(pathname)) {
-      dispatch(setActingOrganizationId(null));
+      dispatch(setActingOrganizationId(undefined));
     }
   }, [dispatch, pathname]);
 

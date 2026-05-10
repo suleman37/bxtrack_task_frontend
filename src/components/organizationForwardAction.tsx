@@ -2,10 +2,7 @@
 
 import { ArrowRightCircle } from "lucide-react";
 import useNavigationAction from "@/hooks/useNavigationAction";
-
-type OrganizationForwardActionProps = {
-  href: string;
-};
+import type { OrganizationForwardActionProps } from "@/models/organizationForwardActionProps.model";
 
 export default function OrganizationForwardAction({
   href,

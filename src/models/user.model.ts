@@ -1,12 +1,12 @@
 import type { PaginationModel } from "@/models/pagination.model";
 
 export type UserModel = {
-  createdById: number | null;
+  createdById?: number;
   email: string;
   id: number;
   name: string;
-  organizationId: number | null;
-  organizationName: string | null;
+  organizationId?: number;
+  organizationName?: string;
   role: string;
 };
 

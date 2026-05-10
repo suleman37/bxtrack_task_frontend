@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import Card, {
   CardContent,
   CardDescription,
@@ -6,21 +5,7 @@ import Card, {
   CardTitle,
 } from "@/components/card";
 import { cn } from "@/lib/cn";
-
-type DataTableColumn<T> = {
-  header: string;
-  className?: string;
-  render: (row: T, rowIndex: number) => ReactNode;
-};
-
-type DataTableProps<T extends { id: string | number }> = {
-  title: string;
-  description: string;
-  columns: DataTableColumn<T>[];
-  rows: T[];
-  emptyMessage?: string;
-  footer?: ReactNode;
-};
+import type { DataTableProps } from "@/models/dataTable.model";
 
 export default function DataTable<T extends { id: string | number }>({
   title,

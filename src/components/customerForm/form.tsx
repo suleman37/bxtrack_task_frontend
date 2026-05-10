@@ -18,15 +18,8 @@ import {
 } from "@/components/form";
 import Input from "@/components/input";
 import { cn } from "@/lib/cn";
-import type { UserModel } from "@/models/user.model";
+import type { CustomerFormProps } from "@/models/customerFormProps.model";
 import { customerSchema, type CustomerFormType } from "@/schemas/customer.dto";
-
-type CustomerFormProps = {
-  assignableUsers: UserModel[];
-  cancelHref: string;
-  isSubmitting?: boolean;
-  onSubmit: (values: CustomerFormType) => void | Promise<void>;
-};
 
 export default function CustomerForm({
   assignableUsers,

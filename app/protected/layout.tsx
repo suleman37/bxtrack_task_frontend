@@ -1,9 +1,5 @@
-import type { ReactNode } from "react";
+import type { ProtectedLayoutProps } from "@/models/protectedLayoutProps.model";
 import ProtectedShell from "@/src/components/sideBar";
-
-type ProtectedLayoutProps = {
-  children: ReactNode;
-};
 
 export default function ProtectedLayout({
   children,

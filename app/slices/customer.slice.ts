@@ -1,13 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { AppDispatch, RootState } from "@/app/store";
-import type { CustomerModel } from "@/models/customer.model";
-import type { PaginationModel } from "@/models/pagination.model";
+import type { CustomerState } from "@/models/customerState.model";
 import { CUSTOMER_PAGE_SIZE, customerApi } from "@/services/customer.service";
-
-type CustomerState = {
-  customers: CustomerModel[];
-  pagination: PaginationModel;
-};
 
 const initialState: CustomerState = {
   customers: [],

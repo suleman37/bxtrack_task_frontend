@@ -1,13 +1,9 @@
 "use client";
 
 import { ArrowLeftCircle } from "lucide-react";
-import type { ReactNode } from "react";
 import useProtectedShell from "@/hooks/useProtectedShell";
+import type { ProtectedShellProps } from "@/models/protectedShellProps.model";
 import Sidebar from "@/src/components/sidebar/sidebar";
-
-type ProtectedShellProps = {
-  children: ReactNode;
-};
 
 export default function ProtectedShell({ children }: ProtectedShellProps) {
   const {

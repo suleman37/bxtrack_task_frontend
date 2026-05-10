@@ -1,14 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { AppDispatch, RootState } from "@/app/store";
-import type { UserModel } from "@/models/user.model";
-import type { PaginationModel } from "@/models/pagination.model";
+import type { UserState } from "@/models/userState.model";
 import { userApi } from "@/services/user.service";
 import { DEFAULT_PAGE_LIMIT } from "@/utility/pagination";
-
-type UserState = {
-  users: UserModel[];
-  pagination: PaginationModel;
-};
 
 const initialState: UserState = {
   users: [],

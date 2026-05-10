@@ -1,14 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
+import type { ToastProviderProps } from "@/models/toastProviderProps.model";
 import { subscribeToToastNotifications } from "@/utility/toast";
-
-type ToastProviderProps = {
-  children: ReactNode;
-};
 
 export default function ToastProvider({ children }: ToastProviderProps) {
   useEffect(() => {

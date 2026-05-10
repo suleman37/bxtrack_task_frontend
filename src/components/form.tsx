@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import type { HTMLAttributes, LabelHTMLAttributes } from "react";
 import {
   Controller,
   FormProvider,
@@ -11,21 +10,16 @@ import {
   type FieldValues,
 } from "react-hook-form";
 import { cn } from "@/lib/cn";
-
-type FormLabelProps = LabelHTMLAttributes<HTMLLabelElement>;
-type FormControlProps = HTMLAttributes<HTMLDivElement>;
-type FormItemProps = HTMLAttributes<HTMLDivElement>;
-type FormMessageProps = HTMLAttributes<HTMLParagraphElement>;
-type FormActionsProps = HTMLAttributes<HTMLDivElement>;
+import type {
+  FormActionsProps,
+  FormControlProps,
+  FormFieldContextValue,
+  FormItemProps,
+  FormLabelProps,
+  FormMessageProps,
+} from "@/models/form.model";
 
 const Form = FormProvider;
-
-type FormFieldContextValue<
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-> = {
-  name: TName;
-};
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue

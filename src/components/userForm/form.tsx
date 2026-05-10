@@ -18,15 +18,9 @@ import { UserRole } from "@/enums/userRole.enum";
 import usePasswordVisibility from "@/hooks/usePasswordVisibility";
 import useUserForm from "@/hooks/useUserForm";
 import { cn } from "@/lib/cn";
-import type { UserFormType } from "@/schemas/user.dto";
+import type { UserFormProps } from "@/models/userFormProps.model";
 
 const roleOptions = Object.values(UserRole);
-
-type UserFormProps = {
-  cancelHref: string;
-  isSubmitting?: boolean;
-  onSubmit: (values: UserFormType) => void | Promise<void>;
-};
 
 export default function UserForm({
   cancelHref,

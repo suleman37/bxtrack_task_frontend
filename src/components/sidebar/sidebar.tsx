@@ -3,14 +3,7 @@
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
-import type { SidebarNavItem } from "@/src/components/sidebar/navItems";
-
-type SidebarProps = {
-  isPending?: boolean;
-  items: SidebarNavItem[];
-  onLogout: () => void;
-  pathname: string;
-};
+import type { SidebarProps } from "@/models/sidebarProps.model";
 
 function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);

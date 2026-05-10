@@ -7,17 +7,17 @@ import {
   getAuthTokenCookie,
 } from "@/services/cookie.service";
 
-type StateWithAuth = { auth: { actingOrganizationId: number | null } };
+type StateWithAuth = { auth: { actingOrganizationId?: number } };
 
-function resolveActingOrganizationId(getState: () => unknown): number | null {
+function resolveActingOrganizationId(getState: () => unknown): number | undefined {
   const fromState = (getState() as StateWithAuth).auth?.actingOrganizationId;
-  if (fromState !== undefined && fromState !== null) {
+  if (fromState !== undefined) {
     return fromState;
   }
   const raw = getActingOrganizationIdCookie();
-  if (!raw) return null;
+  if (!raw) return undefined;
   const n = Number(raw);
-  return Number.isFinite(n) && n > 0 ? n : null;
+  return Number.isFinite(n) && n > 0 ? n : undefined;
 }
 
 const rawBaseQuery = fetchBaseQuery({
@@ -29,7 +29,7 @@ const rawBaseQuery = fetchBaseQuery({
     }
     const role = normalizeUserRole(getAuthRoleCookie());
     const actingOrgId = resolveActingOrganizationId(getState);
-    if (token && isSuperAdminRole(role) && actingOrgId !== null) {
+    if (token && isSuperAdminRole(role) && actingOrgId !== undefined) {
       headers.set("X-Organization-Id", String(actingOrgId));
     }
     return headers;

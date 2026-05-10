@@ -21,12 +21,12 @@ export default function CustomersPage() {
     useDeleteCustomerMutation();
 
   useEffect(() => {
-    dispatch(fetchCustomers());
+    dispatch(fetchCustomers(true));
   }, [dispatch, actingOrganizationId]);
 
   async function handleDeleteCustomer(customerId: number) {
     await deleteCustomer(customerId).unwrap();
-    dispatch(fetchCustomers());
+    dispatch(fetchCustomers(true));
   }
 
   return (

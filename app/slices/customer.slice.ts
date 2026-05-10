@@ -25,8 +25,12 @@ const customerSlice = createSlice({
   },
 });
 
-export const fetchCustomers = () => async (dispatch: AppDispatch) => {
-  await dispatch(customerApi.endpoints.getCustomers.initiate()).unwrap();
+export const fetchCustomers =
+  (forceRefetch = false) =>
+  async (dispatch: AppDispatch) => {
+    await dispatch(
+      customerApi.endpoints.getCustomers.initiate(undefined, { forceRefetch })
+    ).unwrap();
 };
 
 export const selectCustomers = (state: RootState) => state.customers.customers;

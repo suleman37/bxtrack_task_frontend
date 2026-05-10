@@ -18,7 +18,7 @@ export default function SuperAdminOrganizationsPage() {
   ) as UserModel[];
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchUsers(true));
   }, [dispatch]);
 
   return (

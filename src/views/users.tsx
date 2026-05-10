@@ -16,7 +16,7 @@ export default function UsersPage() {
   const actingOrganizationId = useSelector(selectActingOrganizationId);
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchUsers(true));
   }, [dispatch, actingOrganizationId]);
 
   return (

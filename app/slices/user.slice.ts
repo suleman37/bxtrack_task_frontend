@@ -25,8 +25,12 @@ const userSlice = createSlice({
   },
 });
 
-export const fetchUsers = () => async (dispatch: AppDispatch) => {
-  await dispatch(userApi.endpoints.getUsers.initiate()).unwrap();
+export const fetchUsers =
+  (forceRefetch = false) =>
+  async (dispatch: AppDispatch) => {
+    await dispatch(
+      userApi.endpoints.getUsers.initiate(undefined, { forceRefetch })
+    ).unwrap();
 };
 
 export const selectUsers = (state: RootState) => state.users.users;

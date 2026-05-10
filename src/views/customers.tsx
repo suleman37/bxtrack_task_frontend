@@ -4,8 +4,13 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { selectActingOrganizationId } from "@/app/slices/auth.slice";
-import { fetchCustomers, selectCustomers } from "@/app/slices/customer.slice";
+import {
+  fetchCustomers,
+  selectCustomers,
+  selectCustomersPagination,
+} from "@/app/slices/customer.slice";
 import type { AppDispatch } from "@/app/store";
+import Button from "@/components/button";
 import CustomerTableActions from "@/components/customerTableActions";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
@@ -14,11 +19,20 @@ import { cn } from "@/lib/cn";
 export default function CustomersPage() {
   const dispatch = useDispatch<AppDispatch>();
   const customers = useSelector(selectCustomers);
+  const pagination = useSelector(selectCustomersPagination);
   const actingOrganizationId = useSelector(selectActingOrganizationId);
 
   useEffect(() => {
-    dispatch(fetchCustomers(true));
+    dispatch(fetchCustomers(true, 1));
   }, [dispatch, actingOrganizationId]);
+
+  function handlePageChange(page: number) {
+    if (page === pagination.page || page < 1 || page > pagination.totalPages) {
+      return;
+    }
+
+    dispatch(fetchCustomers(true, page));
+  }
 
   return (
     <section className="space-y-6">
@@ -69,6 +83,31 @@ export default function CustomersPage() {
         description="Manage customers from the current protected page."
         rows={customers}
         emptyMessage="No customers available."
+        footer={
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-zinc-600">
+              Page {pagination.page} of {pagination.totalPages} - {pagination.total}{" "}
+              customer{pagination.total === 1 ? "" : "s"}
+            </p>
+
+            <div className="flex items-center gap-2">
+              <Button
+                className="h-10 rounded-lg bg-zinc-700 px-4 text-white hover:bg-zinc-800"
+                disabled={!pagination.hasPreviousPage}
+                onClick={() => handlePageChange(pagination.page - 1)}
+              >
+                Previous
+              </Button>
+              <Button
+                className="h-10 rounded-lg px-4"
+                disabled={!pagination.hasNextPage}
+                onClick={() => handlePageChange(pagination.page + 1)}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        }
         title="Customer Accounts"
       />
     </section>

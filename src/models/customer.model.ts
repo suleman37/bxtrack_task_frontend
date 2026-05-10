@@ -6,3 +6,17 @@ export type CustomerModel = {
   assignedToName: string;
   status?: string;
 };
+
+export type CustomerPaginationModel = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+};
+
+export type CustomerListModel = {
+  customers: CustomerModel[];
+  pagination: CustomerPaginationModel;
+};

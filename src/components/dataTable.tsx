@@ -19,6 +19,7 @@ type DataTableProps<T extends { id: string | number }> = {
   columns: DataTableColumn<T>[];
   rows: T[];
   emptyMessage?: string;
+  footer?: ReactNode;
 };
 
 export default function DataTable<T extends { id: string | number }>({
@@ -27,6 +28,7 @@ export default function DataTable<T extends { id: string | number }>({
   columns,
   rows,
   emptyMessage = "No records available.",
+  footer,
 }: DataTableProps<T>) {
   return (
     <Card>
@@ -93,6 +95,8 @@ export default function DataTable<T extends { id: string | number }>({
             </tbody>
           </table>
         </div>
+
+        {footer ? <div className="mt-4">{footer}</div> : null}
       </CardContent>
     </Card>
   );

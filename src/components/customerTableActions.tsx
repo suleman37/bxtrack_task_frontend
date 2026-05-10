@@ -265,7 +265,11 @@ export default function CustomerTableActions({
   return (
     <>
       <div className="flex items-center gap-2">
-        <NoteAction ariaLabel="Customer notes" onClick={handleOpenNotes} />
+        <NoteAction
+          ariaLabel="Customer notes"
+          disabled={isDeletedCustomer}
+          onClick={handleOpenNotes}
+        />
         {isDeletedCustomer ? (
           <RestoreAction
             ariaLabel="Restore customer"

@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import UserForm from "@/components/userForm/form";
 import { R } from "@/constants/R";
-import useAddUser from "@/hooks/useAddUser";
+import type { UserFormType } from "@/schemas/user.dto";
+import { useCreateUserMutation } from "@/services/user.service";
 
 export default function AddUserPage() {
-  const { handleSubmit, isSubmitting } = useAddUser();
+  const router = useRouter();
+  const [createUser, { isLoading }] = useCreateUserMutation();
+
+  async function handleSubmit(values: UserFormType) {
+    await createUser(values).unwrap();
+    router.push(R.protected.admin.user);
+  }
 
   return (
     <section className="space-y-6">
@@ -30,7 +38,7 @@ export default function AddUserPage() {
 
       <UserForm
         cancelHref={R.protected.admin.user}
-        isSubmitting={isSubmitting}
+        isSubmitting={isLoading}
         onSubmit={handleSubmit}
       />
     </section>

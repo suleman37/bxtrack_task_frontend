@@ -2,11 +2,7 @@
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
-import type { AppDispatch } from "@/app/store";
 import Button from "@/components/button";
 import Card, {
   CardContent
@@ -21,33 +17,26 @@ import {
   FormMessage,
 } from "@/components/form";
 import Input from "@/components/input";
-import { UserRole } from "@/enums/userRole.enum";
 import { cn } from "@/lib/cn";
+import type { UserModel } from "@/models/user.model";
 import { customerSchema, type CustomerFormType } from "@/schemas/customer.dto";
 
 type CustomerFormProps = {
+  assignableUsers: UserModel[];
   cancelHref: string;
   isSubmitting?: boolean;
   onSubmit: (values: CustomerFormType) => void | Promise<void>;
 };
 
 export default function CustomerForm({
+  assignableUsers,
   cancelHref,
   isSubmitting,
   onSubmit,
 }: CustomerFormProps) {
-  const dispatch = useDispatch<AppDispatch>();
-  const users = useSelector(selectUsers);
   const form = useForm<CustomerFormType>({
     resolver: yupResolver(customerSchema),
   });
-  const assignableUsers = users.filter((user) => user.role === UserRole.User);
-
-  useEffect(() => {
-    if (users.length === 0) {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, users.length]);
 
   return (
     <Card>

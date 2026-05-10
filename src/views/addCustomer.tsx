@@ -1,12 +1,34 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { selectActingOrganizationId } from "@/app/slices/auth.slice";
+import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
+import type { AppDispatch } from "@/app/store";
 import CustomerForm from "@/components/customerForm/form";
 import { R } from "@/constants/R";
-import useAddCustomer from "@/hooks/useAddCustomer";
+import { UserRole } from "@/enums/userRole.enum";
+import type { CustomerFormType } from "@/schemas/customer.dto";
+import { useCreateCustomerMutation } from "@/services/customer.service";
 
 export default function AddCustomerPage() {
-  const { handleSubmit, isSubmitting } = useAddCustomer();
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const users = useSelector(selectUsers);
+  const actingOrganizationId = useSelector(selectActingOrganizationId);
+  const [createCustomer, { isLoading }] = useCreateCustomerMutation();
+  const assignableUsers = users.filter((user) => user.role === UserRole.User);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch, actingOrganizationId]);
+
+  async function handleSubmit(values: CustomerFormType) {
+    await createCustomer(values).unwrap();
+    router.push(R.protected.admin.customers);
+  }
 
   return (
     <section className="space-y-6">
@@ -29,8 +51,9 @@ export default function AddCustomerPage() {
       </div>
 
       <CustomerForm
+        assignableUsers={assignableUsers}
         cancelHref={R.protected.admin.customers}
-        isSubmitting={isSubmitting}
+        isSubmitting={isLoading}
         onSubmit={handleSubmit}
       />
     </section>

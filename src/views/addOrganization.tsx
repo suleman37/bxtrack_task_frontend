@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import OrganizationForm from "@/components/organizationForm/form";
 import { R } from "@/constants/R";
-import useAddOrganization from "@/hooks/useAddOrganization";
+import type { OrganizationFormType } from "@/schemas/organization.dto";
+import { useCreateUserMutation } from "@/services/user.service";
 
 export default function AddOrganizationPage() {
-  const { handleSubmit, isSubmitting } = useAddOrganization();
+  const router = useRouter();
+  const [createUser, { isLoading }] = useCreateUserMutation();
+
+  async function handleSubmit(values: OrganizationFormType) {
+    await createUser(values).unwrap();
+    router.push(R.protected.superAdmin.organizations);
+  }
 
   return (
     <section className="space-y-6">
@@ -30,7 +38,7 @@ export default function AddOrganizationPage() {
 
       <OrganizationForm
         cancelHref={R.protected.superAdmin.organizations}
-        isSubmitting={isSubmitting}
+        isSubmitting={isLoading}
         onSubmit={handleSubmit}
       />
     </section>

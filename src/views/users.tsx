@@ -1,23 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { selectActingOrganizationId } from "@/app/slices/auth.slice";
-import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
-import type { AppDispatch } from "@/app/store";
+import { useSelector } from "react-redux";
+import { selectUsers } from "@/app/slices/user.slice";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
 
 export default function UsersPage() {
-  const dispatch = useDispatch<AppDispatch>();
   const users = useSelector(selectUsers);
-  const actingOrganizationId = useSelector(selectActingOrganizationId);
-
-  useEffect(() => {
-    dispatch(fetchUsers(true));
-  }, [dispatch, actingOrganizationId]);
 
   return (
     <section className="space-y-6">

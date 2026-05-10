@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
-import type { AppDispatch } from "@/app/store";
+import { useSelector } from "react-redux";
+import { selectUsers } from "@/app/slices/user.slice";
 import OrganizationForwardAction from "@/components/organizationForwardAction";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
@@ -12,14 +10,9 @@ import { cn } from "@/lib/cn";
 import type { UserModel } from "@/models/user.model";
 
 export default function SuperAdminOrganizationsPage() {
-  const dispatch = useDispatch<AppDispatch>();
   const organizations = useSelector(selectUsers).filter(
     (user: UserModel) => user.organizationName
   ) as UserModel[];
-
-  useEffect(() => {
-    dispatch(fetchUsers(true));
-  }, [dispatch]);
 
   return (
     <section className="space-y-6">

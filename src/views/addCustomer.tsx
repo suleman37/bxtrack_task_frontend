@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { selectActingOrganizationId } from "@/app/slices/auth.slice";
-import { fetchUsers, selectUsers } from "@/app/slices/user.slice";
+import { fetchCustomers } from "@/app/slices/customer.slice";
+import { selectUsers } from "@/app/slices/user.slice";
 import type { AppDispatch } from "@/app/store";
 import CustomerForm from "@/components/customerForm/form";
 import { R } from "@/constants/R";
@@ -17,16 +16,12 @@ export default function AddCustomerPage() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const users = useSelector(selectUsers);
-  const actingOrganizationId = useSelector(selectActingOrganizationId);
   const [createCustomer, { isLoading }] = useCreateCustomerMutation();
   const assignableUsers = users.filter((user) => user.role === UserRole.User);
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch, actingOrganizationId]);
-
   async function handleSubmit(values: CustomerFormType) {
     await createCustomer(values).unwrap();
+    await dispatch(fetchCustomers(true));
     router.push(R.protected.admin.customers);
   }
 

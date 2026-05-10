@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { selectActingOrganizationId } from "@/app/slices/auth.slice";
 import {
   fetchCustomers,
   selectCustomers,
@@ -20,11 +18,6 @@ export default function CustomersPage() {
   const dispatch = useDispatch<AppDispatch>();
   const customers = useSelector(selectCustomers);
   const pagination = useSelector(selectCustomersPagination);
-  const actingOrganizationId = useSelector(selectActingOrganizationId);
-
-  useEffect(() => {
-    dispatch(fetchCustomers(true, 1));
-  }, [dispatch, actingOrganizationId]);
 
   function handlePageChange(page: number) {
     if (page === pagination.page || page < 1 || page > pagination.totalPages) {

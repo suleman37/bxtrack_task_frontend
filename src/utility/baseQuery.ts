@@ -36,7 +36,24 @@ const rawBaseQuery = fetchBaseQuery({
     return headers;
   },
 });
-const getApiMessage = (payload: any, fallback: string) => payload?.message?.trim() || fallback;
+
+function getApiMessage(payload: unknown, fallback: string) {
+  if (
+    typeof payload === "object" &&
+    payload !== null &&
+    "message" in payload &&
+    typeof payload.message === "string"
+  ) {
+    const message = payload.message.trim();
+
+    if (message) {
+      return message;
+    }
+  }
+
+  return fallback;
+}
+
 export const baseQuery: BaseQueryFn<
   string | FetchArgs,
   unknown,

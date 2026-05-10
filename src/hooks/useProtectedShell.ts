@@ -3,11 +3,15 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   clearToken,
+  selectActingOrganizationId,
   setActingOrganizationId,
 } from "@/app/slices/auth.slice";
+import { fetchCustomers } from "@/app/slices/customer.slice";
+import { fetchLogs } from "@/app/slices/log.slice";
+import { fetchUsers } from "@/app/slices/user.slice";
 import type { AppDispatch } from "@/app/store";
 import { R } from "@/constants/R";
 import { isSuperAdminPath, isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
@@ -22,6 +26,7 @@ export default function useProtectedShell() {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const actingOrganizationId = useSelector(selectActingOrganizationId);
   const [isPending, startTransition] = useTransition();
   const sidebarNavItems = getSidebarNavItems(pathname);
   const activeItem =
@@ -36,6 +41,19 @@ export default function useProtectedShell() {
       dispatch(setActingOrganizationId(null));
     }
   }, [dispatch, pathname]);
+
+  useEffect(() => {
+    const requests = [
+      dispatch(fetchUsers(true)),
+      dispatch(fetchCustomers(true, 1)),
+    ];
+
+    if (isSuperAdminRole(currentRole)) {
+      requests.push(dispatch(fetchLogs(true)));
+    }
+
+    void Promise.all(requests);
+  }, [actingOrganizationId, currentRole, dispatch]);
 
   function handleLogout() {
     dispatch(clearToken());

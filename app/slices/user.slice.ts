@@ -16,12 +16,9 @@ const userSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addMatcher(
-      userApi.endpoints.getUsers.matchFulfilled,
-      (state, action) => {
+    builder.addMatcher(userApi.endpoints.getUsers.matchFulfilled, (state, action) => {
         state.users = action.payload;
-      }
-    );
+      });
   },
 });
 
@@ -31,7 +28,7 @@ export const fetchUsers =
     await dispatch(
       userApi.endpoints.getUsers.initiate(undefined, { forceRefetch })
     ).unwrap();
-};
+  };
 
 export const selectUsers = (state: RootState) => state.users.users;
 export default userSlice.reducer;

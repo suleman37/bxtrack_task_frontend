@@ -41,7 +41,8 @@ const customerSlice = createSlice({
 export const fetchCustomers =
   (forceRefetch = false, page?: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const currentPage = page ?? getState().customers.pagination.page;
+    const state = getState();
+    const currentPage = page ?? state.customers.pagination.page;
 
     await dispatch(
       customerApi.endpoints.getCustomers.initiate(
@@ -52,7 +53,7 @@ export const fetchCustomers =
         { forceRefetch }
       )
     ).unwrap();
-};
+  };
 
 export const selectCustomers = (state: RootState) => state.customers.customers;
 export const selectCustomersPagination = (state: RootState) =>

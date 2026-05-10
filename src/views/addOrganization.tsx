@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "@/app/slices/user.slice";
+import type { AppDispatch } from "@/app/store";
 import OrganizationForm from "@/components/organizationForm/form";
 import { R } from "@/constants/R";
 import type { OrganizationFormType } from "@/schemas/organization.dto";
@@ -9,10 +12,12 @@ import { useCreateUserMutation } from "@/services/user.service";
 
 export default function AddOrganizationPage() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const [createUser, { isLoading }] = useCreateUserMutation();
 
   async function handleSubmit(values: OrganizationFormType) {
     await createUser(values).unwrap();
+    await dispatch(fetchUsers(true));
     router.push(R.protected.superAdmin.organizations);
   }
 

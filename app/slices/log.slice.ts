@@ -17,8 +17,8 @@ const logSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addMatcher(logApi.endpoints.getLogs.matchFulfilled, (state, action) => {
-      state.logs = action.payload;
-    });
+        state.logs = action.payload;
+      });
   },
 });
 

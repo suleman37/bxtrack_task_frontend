@@ -22,9 +22,7 @@ const LoginPage = () => {
       dispatch(setToken(response.Token));
     }
 
-    const role = normalizeUserRole(
-      response.role
-    );
+    const role = normalizeUserRole(response.role);
     if (role) {
       setAuthRoleCookie(role);
     } else {

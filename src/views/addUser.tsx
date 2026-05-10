@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "@/app/slices/user.slice";
+import type { AppDispatch } from "@/app/store";
 import UserForm from "@/components/userForm/form";
 import { R } from "@/constants/R";
 import type { UserFormType } from "@/schemas/user.dto";
@@ -9,10 +12,12 @@ import { useCreateUserMutation } from "@/services/user.service";
 
 export default function AddUserPage() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const [createUser, { isLoading }] = useCreateUserMutation();
 
   async function handleSubmit(values: UserFormType) {
     await createUser(values).unwrap();
+    await dispatch(fetchUsers(true));
     router.push(R.protected.admin.user);
   }
 

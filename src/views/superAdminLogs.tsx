@@ -1,18 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchLogs, selectLogs } from "@/app/slices/log.slice";
-import type { AppDispatch } from "@/app/store";
+import { useSelector } from "react-redux";
+import { selectLogs } from "@/app/slices/log.slice";
 import DataTable from "@/src/components/dataTable";
 
 export default function SuperAdminLogsPage() {
-  const dispatch = useDispatch<AppDispatch>();
   const logs = useSelector(selectLogs);
-
-  useEffect(() => {
-    dispatch(fetchLogs(true));
-  }, [dispatch]);
 
   return (
     <section className="space-y-6">

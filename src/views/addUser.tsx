@@ -29,7 +29,7 @@ export default function AddUserPage() {
             Add User
           </h3>
           <p className="mt-1 text-sm text-zinc-600">
-            Create a user with name, email, password, and role.
+            Create a user with name, email, and password.
           </p>
         </div>
 

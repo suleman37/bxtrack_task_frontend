@@ -14,13 +14,9 @@ import {
   FormMessage,
 } from "@/components/form";
 import Input from "@/components/input";
-import { UserRole } from "@/enums/userRole.enum";
 import usePasswordVisibility from "@/hooks/usePasswordVisibility";
 import useUserForm from "@/hooks/useUserForm";
-import { cn } from "@/lib/cn";
 import type { UserFormProps } from "@/models/userFormProps.model";
-
-const roleOptions = Object.values(UserRole);
 
 export default function UserForm({
   cancelHref,
@@ -73,33 +69,6 @@ export default function UserForm({
                         {...field}
                         value={field.value}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <FormControl>
-                      <select
-                        {...field}
-                        value={field.value}
-                        className={cn(
-                          "h-11 w-full rounded-[8px] border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition-colors focus:border-zinc-950"
-                        )}
-                      >
-                        <option value="">Select role</option>
-                        {roleOptions.map((role) => (
-                          <option key={role} value={role}>
-                            {role.charAt(0).toUpperCase() + role.slice(1)}
-                          </option>
-                        ))}
-                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

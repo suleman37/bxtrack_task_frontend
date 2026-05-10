@@ -65,11 +65,18 @@ export default function CustomerTableActions({
   }
 
   function normalizeNotesResponse(payload: CustomerNotesResponse) {
-    const list = Array.isArray(payload)
-      ? payload
-      : Array.isArray(payload?.data)
-        ? payload.data
-        : [];
+    let list: unknown[] = [];
+
+    if (Array.isArray(payload)) {
+      list = payload;
+    } else if (
+      typeof payload === "object" &&
+      payload !== null &&
+      "data" in payload &&
+      Array.isArray(payload.data)
+    ) {
+      list = payload.data;
+    }
 
     const normalizedNotes = list
       .map((item) => {

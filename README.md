@@ -24,7 +24,7 @@ cp .env .env.local
 
 If `.env` does not exist on your machine, create `.env.local` manually and add:
 ```env
-NEXT_PUBLIC_BACKEND_BASE_URL=http://localhost:3001
+NEXT_PUBLIC_BACKEND_BASE_URL=http://localhost:8000
 ```
 
 Replace the URL above with the actual local URL of your backend API.

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchLogs,
@@ -7,6 +8,7 @@ import {
   selectLogsPagination,
 } from "@/app/slices/log.slice";
 import type { AppDispatch } from "@/app/store";
+import TableSearchInput from "@/components/tableSearchInput";
 import DataTable from "@/src/components/dataTable";
 import { shouldSkipPageChange } from "@/utility/pagination";
 
@@ -14,6 +16,25 @@ export default function SuperAdminLogsPage() {
   const dispatch = useDispatch<AppDispatch>();
   const logs = useSelector(selectLogs);
   const pagination = useSelector(selectLogsPagination);
+  const [searchValue, setSearchValue] = useState("");
+  const normalizedSearchValue = searchValue.trim().toLowerCase();
+  const filteredLogs = logs.filter((log) => {
+    if (!normalizedSearchValue) {
+      return true;
+    }
+
+    return [
+      log.createdByName,
+      log.action,
+      log.details,
+      log.organizationName,
+      log.date,
+      log.time,
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(normalizedSearchValue);
+  });
 
   function handlePageChange(page: number) {
     if (shouldSkipPageChange(page, pagination)) {
@@ -25,6 +46,14 @@ export default function SuperAdminLogsPage() {
 
   return (
     <section className="space-y-6">
+      <div className="flex justify-end">
+        <TableSearchInput
+          onChange={setSearchValue}
+          placeholder="Search logs"
+          value={searchValue}
+        />
+      </div>
+
       <DataTable
         columns={[
           {
@@ -54,8 +83,12 @@ export default function SuperAdminLogsPage() {
           },
         ]}
         description="Review recent platform-level activity recorded for super admins."
-        emptyMessage="No audit logs available yet."
-        rows={logs}
+        emptyMessage={
+          normalizedSearchValue
+            ? "No logs match your search."
+            : "No audit logs available yet."
+        }
+        rows={filteredLogs}
         footer={
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-zinc-600">

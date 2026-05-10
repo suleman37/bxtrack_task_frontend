@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchUsers,
@@ -8,6 +9,7 @@ import {
   selectUsersPagination,
 } from "@/app/slices/user.slice";
 import type { AppDispatch } from "@/app/store";
+import TableSearchInput from "@/components/tableSearchInput";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
@@ -17,6 +19,18 @@ export default function UsersPage() {
   const dispatch = useDispatch<AppDispatch>();
   const users = useSelector(selectUsers);
   const pagination = useSelector(selectUsersPagination);
+  const [searchValue, setSearchValue] = useState("");
+  const normalizedSearchValue = searchValue.trim().toLowerCase();
+  const filteredUsers = users.filter((user) => {
+    if (!normalizedSearchValue) {
+      return true;
+    }
+
+    return [user.name, user.email, user.role, user.organizationName ?? ""]
+      .join(" ")
+      .toLowerCase()
+      .includes(normalizedSearchValue);
+  });
 
   function handlePageChange(page: number) {
     if (shouldSkipPageChange(page, pagination)) {
@@ -28,7 +42,13 @@ export default function UsersPage() {
 
   return (
     <section className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <TableSearchInput
+          onChange={setSearchValue}
+          placeholder="Search users"
+          value={searchValue}
+        />
+
         <Link
           href={R.protected.admin.userAdd}
           className={cn(
@@ -62,8 +82,12 @@ export default function UsersPage() {
           },
         ]}
         description="Manage users from the current protected page."
-        rows={users}
-        emptyMessage="No users available."
+        rows={filteredUsers}
+        emptyMessage={
+          normalizedSearchValue
+            ? "No users match your search."
+            : "No users available."
+        }
         footer={
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-zinc-600">

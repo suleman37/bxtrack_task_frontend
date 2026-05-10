@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUsers } from "@/app/slices/user.slice";
 import OrganizationForwardAction from "@/components/organizationForwardAction";
+import TableSearchInput from "@/components/tableSearchInput";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
@@ -13,10 +15,33 @@ export default function SuperAdminOrganizationsPage() {
   const organizations = useSelector(selectUsers).filter(
     (user: UserModel) => user.organizationName
   ) as UserModel[];
+  const [searchValue, setSearchValue] = useState("");
+  const normalizedSearchValue = searchValue.trim().toLowerCase();
+  const filteredOrganizations = organizations.filter((organization) => {
+    if (!normalizedSearchValue) {
+      return true;
+    }
+
+    return [
+      organization.organizationName ?? "",
+      organization.name,
+      organization.email,
+      organization.role,
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(normalizedSearchValue);
+  });
 
   return (
     <section className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <TableSearchInput
+          onChange={setSearchValue}
+          placeholder="Search organizations"
+          value={searchValue}
+        />
+
         <Link
           href={R.protected.superAdmin.organizationsAdd}
           className={cn(
@@ -61,8 +86,12 @@ export default function SuperAdminOrganizationsPage() {
           },
         ]}
         description="Monitor organizations from the super admin workspace."
-        emptyMessage="No organizations available yet."
-        rows={organizations}
+        emptyMessage={
+          normalizedSearchValue
+            ? "No organizations match your search."
+            : "No organizations available yet."
+        }
+        rows={filteredOrganizations}
         title="Organizations"
       />
     </section>

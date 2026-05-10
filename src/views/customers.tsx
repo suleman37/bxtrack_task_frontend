@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCustomers,
@@ -9,6 +10,7 @@ import {
 } from "@/app/slices/customer.slice";
 import type { AppDispatch } from "@/app/store";
 import CustomerTableActions from "@/components/customerTableActions";
+import TableSearchInput from "@/components/tableSearchInput";
 import DataTable from "@/src/components/dataTable";
 import { R } from "@/constants/R";
 import { cn } from "@/lib/cn";
@@ -18,6 +20,23 @@ export default function CustomersPage() {
   const dispatch = useDispatch<AppDispatch>();
   const customers = useSelector(selectCustomers);
   const pagination = useSelector(selectCustomersPagination);
+  const [searchValue, setSearchValue] = useState("");
+  const normalizedSearchValue = searchValue.trim().toLowerCase();
+  const filteredCustomers = customers.filter((customer) => {
+    if (!normalizedSearchValue) {
+      return true;
+    }
+
+    return [
+      customer.name,
+      customer.email,
+      customer.phone,
+      customer.assignedToName,
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(normalizedSearchValue);
+  });
 
   function handlePageChange(page: number) {
     if (shouldSkipPageChange(page, pagination)) {
@@ -29,7 +48,13 @@ export default function CustomersPage() {
 
   return (
     <section className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <TableSearchInput
+          onChange={setSearchValue}
+          placeholder="Search customers"
+          value={searchValue}
+        />
+
         <Link
           href={R.protected.admin.customersAdd}
           className={cn(
@@ -75,8 +100,12 @@ export default function CustomersPage() {
           },
         ]}
         description="Manage customers from the current protected page."
-        rows={customers}
-        emptyMessage="No customers available."
+        rows={filteredCustomers}
+        emptyMessage={
+          normalizedSearchValue
+            ? "No customers match your search."
+            : "No customers available."
+        }
         footer={
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-zinc-600">

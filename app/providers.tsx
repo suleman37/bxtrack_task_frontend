@@ -6,6 +6,7 @@ import { Provider, useDispatch } from "react-redux";
 import { setActingOrganizationId } from "@/app/slices/auth.slice";
 import type { AppDispatch } from "@/app/store";
 import { store } from "@/app/store";
+import ToastProvider from "@/components/toaster";
 import { isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
 import {
   getActingOrganizationIdCookie,
@@ -35,8 +36,10 @@ type ProvidersProps = {
 export default function Providers({ children }: ProvidersProps) {
   return (
     <Provider store={store}>
-      <ActingOrganizationHydration />
-      {children}
+      <ToastProvider>
+        <ActingOrganizationHydration />
+        {children}
+      </ToastProvider>
     </Provider>
   );
 }

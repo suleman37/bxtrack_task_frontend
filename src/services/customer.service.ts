@@ -6,6 +6,7 @@ import type {
   CustomerPaginationModel,
 } from "@/models/customer.model";
 import type { CustomerFormType } from "@/schemas/customer.dto";
+import { showToastForMutation } from "@/utility/apiToast";
 import { baseQuery } from "@/utility/baseQuery";
 
 const CUSTOMER_PAGE_SIZE = 10;
@@ -281,6 +282,9 @@ const customerApi = createApi({
         method: "POST",
         body,
       }),
+      async onQueryStarted(_arg, { queryFulfilled }) {
+        await showToastForMutation(queryFulfilled);
+      },
     }),
     createCustomerNote: builder.mutation<
       void,
@@ -291,12 +295,18 @@ const customerApi = createApi({
         method: "POST",
         body,
       }),
+      async onQueryStarted(_arg, { queryFulfilled }) {
+        await showToastForMutation(queryFulfilled);
+      },
     }),
     deleteCustomer: builder.mutation<void, number>({
       query: (id) => ({
         url: endpoints.customers.delete.replace(":id", String(id)),
         method: "DELETE",
       }),
+      async onQueryStarted(_arg, { queryFulfilled }) {
+        await showToastForMutation(queryFulfilled);
+      },
     }),
   }),
 });

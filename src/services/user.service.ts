@@ -3,6 +3,7 @@ import { endpoints } from "@/constants/endpoints";
 import type { UserModel } from "@/models/user.model";
 import type { OrganizationFormType } from "@/schemas/organization.dto";
 import type { UserFormType } from "@/schemas/user.dto";
+import { showToastForMutation } from "@/utility/apiToast";
 import { baseQuery } from "@/utility/baseQuery";
 
 const userApi = createApi({
@@ -18,6 +19,9 @@ const userApi = createApi({
         method: "POST",
         body,
       }),
+      async onQueryStarted(_arg, { queryFulfilled }) {
+        await showToastForMutation(queryFulfilled);
+      },
     }),
   }),
 });

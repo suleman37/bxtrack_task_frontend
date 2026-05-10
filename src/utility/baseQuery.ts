@@ -1,6 +1,5 @@
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import toast from "react-hot-toast";
 import { isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
 import {
   getActingOrganizationIdCookie,
@@ -37,33 +36,10 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
-function getApiMessage(payload: unknown, fallback: string) {
-  if (
-    typeof payload === "object" &&
-    payload !== null &&
-    "message" in payload &&
-    typeof payload.message === "string"
-  ) {
-    const message = payload.message.trim();
-
-    if (message) {
-      return message;
-    }
-  }
-
-  return fallback;
-}
-
 export const baseQuery: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const result = await rawBaseQuery(args, api, extraOptions);
-  if (result.error) {
-    toast.error(getApiMessage("data" in result.error , "Request failed"));
-  } else {
-    toast.success(getApiMessage(result.data, "Request successful"));
-  }
-  return result;
+  return rawBaseQuery(args, api, extraOptions);
 };

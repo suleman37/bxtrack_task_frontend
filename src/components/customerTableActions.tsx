@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { selectActingOrganizationId } from "@/app/slices/auth.slice";
 import { fetchCustomers } from "@/app/slices/customer.slice";
@@ -149,7 +148,6 @@ export default function CustomerTableActions({
 
       setNotes(normalizeNotesResponse(data));
     } catch {
-      toast.error("Failed to load notes");
       setNotes((previousNotes) =>
         previousNotes.length ? previousNotes : [{ notes: "", isSaved: false }]
       );

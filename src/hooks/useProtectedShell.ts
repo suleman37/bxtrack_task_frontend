@@ -14,7 +14,12 @@ import { fetchLogs } from "@/app/slices/log.slice";
 import { fetchUsers } from "@/app/slices/user.slice";
 import type { AppDispatch } from "@/app/store";
 import { R } from "@/constants/R";
-import { isSuperAdminPath, isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
+import {
+  isSuperAdminPath,
+  isSuperAdminRole,
+  isUserRole,
+  normalizeUserRole,
+} from "@/lib/auth";
 import { getAuthRoleCookie } from "@/services/cookie.service";
 import { getSidebarNavItems } from "@/src/components/sidebar/navItems";
 
@@ -28,11 +33,11 @@ export default function useProtectedShell() {
   const dispatch = useDispatch<AppDispatch>();
   const actingOrganizationId = useSelector(selectActingOrganizationId);
   const [isPending, startTransition] = useTransition();
-  const sidebarNavItems = getSidebarNavItems(pathname);
+  const currentRole = normalizeUserRole(getAuthRoleCookie());
+  const sidebarNavItems = getSidebarNavItems(pathname, currentRole);
   const activeItem =
     sidebarNavItems.find((item) => isActivePath(pathname, item.href)) ??
     sidebarNavItems[0];
-  const currentRole = normalizeUserRole(getAuthRoleCookie());
   const canReturnToSuperAdmin =
     !isSuperAdminPath(pathname) && isSuperAdminRole(currentRole);
 
@@ -43,10 +48,11 @@ export default function useProtectedShell() {
   }, [dispatch, pathname]);
 
   useEffect(() => {
-    const requests = [
-      dispatch(fetchUsers(true)),
-      dispatch(fetchCustomers(true, 1)),
-    ];
+    const requests = [dispatch(fetchCustomers(true, 1))];
+
+    if (!isUserRole(currentRole)) {
+      requests.push(dispatch(fetchUsers(true)));
+    }
 
     if (isSuperAdminRole(currentRole)) {
       requests.push(dispatch(fetchLogs(true)));

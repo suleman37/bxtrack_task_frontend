@@ -12,6 +12,10 @@ export const R = {
       customers: "/protected/customers",
       customersAdd: "/protected/customers/add",
     },
+    userPanel: {
+      prefix: "/protected/user/dashboard",
+      customers: "/protected/user/customers",
+    },
     superAdmin: {
       prefix: "/protected/super_admin/dashboard",
       organizations: "/protected/super_admin/organizations",

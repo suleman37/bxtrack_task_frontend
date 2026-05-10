@@ -6,7 +6,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { R } from "@/constants/R";
-import { isSuperAdminPath } from "@/lib/auth";
+import { isSuperAdminPath, isUserRole } from "@/lib/auth";
 import type { SidebarNavItem } from "@/models/sidebarNavItem.model";
 
 export const defaultSidebarNavItems: SidebarNavItem[] = [
@@ -45,9 +45,26 @@ export const superAdminSidebarNavItems: SidebarNavItem[] = [
   },
 ];
 
-export function getSidebarNavItems(pathname: string) {
+export const userSidebarNavItems: SidebarNavItem[] = [
+  {
+    href: R.protected.userPanel.prefix,
+    label: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    href: R.protected.userPanel.customers,
+    label: "Customers",
+    icon: UsersRound,
+  },
+];
+
+export function getSidebarNavItems(pathname: string, role: unknown) {
   if (isSuperAdminPath(pathname)) {
     return superAdminSidebarNavItems;
+  }
+
+  if (isUserRole(role)) {
+    return userSidebarNavItems;
   }
 
   return defaultSidebarNavItems;

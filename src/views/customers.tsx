@@ -61,6 +61,7 @@ export default function CustomersPage() {
               <CustomerTableActions
                 customerId={customer.id}
                 customerName={customer.name}
+                customerStatus={customer.status}
               />
             ),
           },

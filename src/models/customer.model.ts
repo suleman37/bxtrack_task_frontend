@@ -4,4 +4,5 @@ export type CustomerModel = {
   email: string;
   phone: string;
   assignedToName: string;
+  status?: string;
 };

@@ -10,6 +10,7 @@ import CustomerNotesModal from "@/components/customerNotesModal";
 import { endpoints } from "@/constants/endpoints";
 import DeleteAction from "@/components/deleteAction";
 import NoteAction from "@/components/noteAction";
+import RestoreAction from "@/components/restoreAction";
 import { isSuperAdminRole, normalizeUserRole } from "@/lib/auth";
 import {
   getActingOrganizationIdCookie,
@@ -24,6 +25,7 @@ import {
 type CustomerTableActionsProps = {
   customerId: number;
   customerName: string;
+  customerStatus?: string;
 };
 
 type CustomerNoteInput = {
@@ -40,6 +42,7 @@ type CustomerNotesResponse =
 export default function CustomerTableActions({
   customerId,
   customerName,
+  customerStatus,
 }: CustomerTableActionsProps) {
   const dispatch = useDispatch<AppDispatch>();
   const actingOrganizationId = useSelector(selectActingOrganizationId);
@@ -52,6 +55,9 @@ export default function CustomerTableActions({
     useCreateCustomerNoteMutation();
   const [deleteCustomer, { isLoading: isDeletingCustomer }] =
     useDeleteCustomerMutation();
+  const normalizedStatus = customerStatus?.toLowerCase().trim();
+  const isDeletedCustomer =
+    normalizedStatus === "delete" || normalizedStatus === "deleted";
 
   async function handleDeleteCustomer() {
     await deleteCustomer(customerId).unwrap();
@@ -205,11 +211,19 @@ export default function CustomerTableActions({
     <>
       <div className="flex items-center gap-2">
         <NoteAction ariaLabel="Customer notes" onClick={handleOpenNotes} />
-        <DeleteAction
-          ariaLabel="Delete customer"
-          disabled={isDeletingCustomer}
-          onClick={handleDeleteCustomer}
-        />
+        {isDeletedCustomer ? (
+          <RestoreAction
+            ariaLabel="Restore customer"
+            disabled={isDeletingCustomer}
+            onClick={handleDeleteCustomer}
+          />
+        ) : (
+          <DeleteAction
+            ariaLabel="Delete customer"
+            disabled={isDeletingCustomer}
+            onClick={handleDeleteCustomer}
+          />
+        )}
       </div>
 
       <CustomerNotesModal

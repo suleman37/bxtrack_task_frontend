@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearToken,
@@ -33,7 +32,12 @@ export default function useProtectedShell() {
   const dispatch = useDispatch<AppDispatch>();
   const actingOrganizationId = useSelector(selectActingOrganizationId);
   const [isPending, startTransition] = useTransition();
-  const currentRole = normalizeUserRole(getAuthRoleCookie());
+  const [currentRole, setCurrentRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCurrentRole(normalizeUserRole(getAuthRoleCookie()));
+  }, []);
+
   const sidebarNavItems = getSidebarNavItems(pathname, currentRole);
   const activeItem =
     sidebarNavItems.find((item) => isActivePath(pathname, item.href)) ??
